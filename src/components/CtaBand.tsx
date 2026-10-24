@@ -27,7 +27,7 @@ export default function CtaBand({
   label?: string;
   /** optional "what happens next" list under the body */
   steps?: string[];
-  /** home-segment layout: 1920px container, 32–64px gutter, --section-y rhythm */
+  /** home layout: plain white closing segment on the spacing scale */
   wide?: boolean;
 }) {
   const bandRef = useRef<HTMLElement>(null);
@@ -84,23 +84,59 @@ export default function CtaBand({
   const btnClass = "efc-split inline-flex items-stretch text-white";
   const btnStyle = { gap: 3, fontSize: 14, fontWeight: 600 } as const;
 
+  // home: plain white closing segment on the spacing scale; the dark crane band stays for other pages
+  if (wide) {
+    return (
+      <section id={id} style={{ background: "#ffffff", padding: "calc(var(--section-y) / 2) var(--gutter)" }}>
+        <div data-reveal className="mx-auto grid grid-cols-1 items-end lg:grid-cols-12" style={{ maxWidth: 1920, gap: "var(--el)" }}>
+          <div className="flex flex-col items-start lg:col-span-6" style={{ gap: "var(--el)" }}>
+            <h2 className="efc-display" style={{ maxWidth: "18ch", fontSize: "clamp(30px,3.6vw,56px)", lineHeight: 1.04, color: "#101014", textWrap: "balance" }}>
+              <Words text={title} step={45} />
+            </h2>
+            <p className="efc-rise" style={{ ...delay(200), margin: 0, maxWidth: "48ch", fontSize: "clamp(15px,1.15vw,17px)", lineHeight: 1.6, color: "rgba(20,20,26,.66)" }}>
+              {body}
+            </p>
+            <div className="efc-rise" style={delay(320)}>
+              {external ? (
+                <a href={href} className={btnClass} style={btnStyle}>
+                  {buttonInner}
+                </a>
+              ) : (
+                <Link href={href} className={btnClass} style={btnStyle}>
+                  {buttonInner}
+                </Link>
+              )}
+            </div>
+          </div>
+          {steps && (
+            <ol className="efc-rise flex flex-col lg:col-span-4 lg:col-start-8" style={{ ...delay(400), margin: 0, padding: 0, listStyle: "none", gap: "var(--s16)" }}>
+              {steps.map((s, i) => (
+                <li key={s} className="flex items-baseline" style={{ gap: "var(--s16)", fontSize: "clamp(15px,1.15vw,17px)", color: "#14141a" }}>
+                  <span className="font-numeric" style={{ flex: "none", fontSize: 13, fontWeight: 600, color: "#e31e1e" }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {s}
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section
       id={id}
       ref={bandRef}
-      style={{
-        background: "#ffffff",
-        padding: wide
-          ? "calc(var(--section-y) / 2) clamp(32px,4vw,64px) clamp(32px,4vw,64px)"
-          : "clamp(18px,2.2vw,32px) clamp(10px,1.2vw,18px) clamp(10px,1.2vw,18px)",
-      }}
+      style={{ background: "#ffffff", padding: "clamp(18px,2.2vw,32px) clamp(10px,1.2vw,18px) clamp(10px,1.2vw,18px)" }}
     >
       <div
         className="relative mx-auto flex items-start overflow-hidden"
         style={{
-          maxWidth: wide ? 1920 : 1600,
+          maxWidth: 1600,
           minHeight: "clamp(360px,40vw,520px)",
-          borderRadius: wide ? 6 : 22,
+          borderRadius: 22,
           background: "radial-gradient(120% 130% at 8% 12%, #1b1418 0%, #0b0405 58%, #070304 100%)",
         }}
       >

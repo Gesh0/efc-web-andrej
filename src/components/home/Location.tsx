@@ -85,11 +85,11 @@ export default function Location() {
     >
       <div
         data-reveal
-        className="efc-rise grid grid-cols-[minmax(0,1fr)] items-start lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]"
-        style={{ ...delay(260), gap: "clamp(16px,2vw,32px)" }}
+        className="efc-rise grid grid-cols-1 items-start lg:grid-cols-12"
+        style={{ ...delay(260), gap: "var(--el)" }}
       >
         {/* benefits */}
-        <ul className="order-2 flex min-w-0 flex-col lg:order-1" style={{ margin: 0, padding: 0, listStyle: "none", borderTop: "1px solid rgba(20,20,26,.1)" }}>
+        <ul className="order-2 flex min-w-0 flex-col lg:order-1 lg:col-span-5" style={{ margin: 0, padding: 0, listStyle: "none", gap: "var(--el)" }}>
           {BENEFITS.map((b) => {
             const on = hot === b.mark;
             return (
@@ -101,7 +101,7 @@ export default function Location() {
                 onFocus={() => setHot(b.mark)}
                 onBlur={() => setHot(null)}
                 className="grid cursor-default outline-none focus-visible:ring-2 focus-visible:ring-brand"
-                style={{ gridTemplateColumns: "44px minmax(0,1fr)", columnGap: 16, rowGap: 4, padding: "clamp(16px,1.6vw,22px) 0", borderBottom: "1px solid rgba(20,20,26,.1)" }}
+                style={{ gridTemplateColumns: "44px minmax(0,1fr)", columnGap: "var(--s16)", rowGap: "var(--s8)" }}
               >
                 <span
                   className="grid place-items-center"
@@ -109,11 +109,10 @@ export default function Location() {
                     gridRow: "span 2",
                     width: 44,
                     height: 44,
-                    borderRadius: 8,
-                    border: `1px solid ${on ? RED : "rgba(20,20,26,.14)"}`,
-                    background: on ? RED : "#ffffff",
-                    color: on ? "#ffffff" : "#14141a",
-                    transition: `background-color 260ms ${EASE}, color 260ms ${EASE}, border-color 260ms ${EASE}`,
+                    borderRadius: 4,
+                    background: on ? RED : "#fbeaea",
+                    color: on ? "#ffffff" : RED,
+                    transition: `background-color 260ms ${EASE}, color 260ms ${EASE}`,
                   }}
                 >
                   <MaterialIcon name={b.icon} size={22} />
@@ -127,8 +126,8 @@ export default function Location() {
 
         {/* map */}
         <div
-          className="relative order-1 overflow-hidden lg:sticky lg:order-2"
-          style={{ top: 120, minHeight: "clamp(320px,38vw,560px)", height: "100%", borderRadius: 6, background: "#1b1b20" }}
+          className="relative order-1 overflow-hidden lg:sticky lg:order-2 lg:col-span-6 lg:col-start-7"
+          style={{ top: 120, minHeight: "clamp(320px,38vw,560px)", height: "100%", borderRadius: 4, background: "#1b1b20" }}
         >
           <iframe
             title="Локација на EFC на Google Maps"

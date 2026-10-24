@@ -1,51 +1,59 @@
 import type { CSSProperties, ReactNode } from "react";
 import Words, { delay } from "@/components/motion/Words";
 
-/** Side gutter shared by every home segment (32–64px). */
-export const GUTTER = "clamp(32px,4vw,64px)";
-
 /**
- * Home-page segment shell: full-bleed white section, 1920px container, and an optional
- * header row (title left, intro right). Gaps — segment to segment and header to content —
- * all come from --section-y so the rhythm stays even.
+ * Home-page segment shell. Spacing comes only from the scale in globals.css:
+ * half of --section-y above and below (so any two segments sit --section-y apart),
+ * --head between the header row and the content, --gutter at the sides.
+ * No dividers: whitespace separates segments.
  */
 export default function Segment({
   id,
   title,
   intro,
   children,
+  dark = false,
   style,
 }: {
   id?: string;
   title?: string;
   intro?: ReactNode;
   children: ReactNode;
+  /** full-bleed dark band (used once, for delivery) */
+  dark?: boolean;
   style?: CSSProperties;
 }) {
   return (
-    <section id={id} style={{ background: "#ffffff", color: "#14141a", padding: `calc(var(--section-y) / 2) ${GUTTER}`, ...style }}>
-      <div className="mx-auto flex flex-col" style={{ maxWidth: 1920, gap: "var(--section-y)" }}>
+    <section
+      id={id}
+      style={{
+        background: dark ? "#101014" : "#ffffff",
+        color: dark ? "#ffffff" : "#14141a",
+        padding: "calc(var(--section-y) / 2) var(--gutter)",
+        ...style,
+      }}
+    >
+      <div className="mx-auto flex flex-col" style={{ maxWidth: 1920, gap: "var(--head)" }}>
         {title && (
-          <div className="flex flex-wrap items-end justify-between" style={{ gap: "clamp(20px,4vw,64px)" }}>
+          <div className="grid grid-cols-1 items-end lg:grid-cols-12" style={{ gap: "var(--el)" }}>
             <h2
               data-reveal
-              className="efc-display"
-              style={{ maxWidth: "18ch", fontSize: "clamp(28px,3.4vw,52px)", lineHeight: 1.04, color: "#101014", textWrap: "balance" }}
+              className="efc-display lg:col-span-6"
+              style={{ maxWidth: "18ch", fontSize: "clamp(30px,3.6vw,56px)", lineHeight: 1.04, color: dark ? "#ffffff" : "#101014", textWrap: "balance" }}
             >
               <Words text={title} step={45} />
             </h2>
             {intro && (
               <p
                 data-reveal
-                className="efc-rise"
+                className="efc-rise lg:col-span-4 lg:col-start-8"
                 style={{
                   ...delay(200),
                   margin: 0,
                   maxWidth: "48ch",
-                  flex: "1 1 340px",
                   fontSize: "clamp(15px,1.15vw,17px)",
                   lineHeight: 1.6,
-                  color: "rgba(20,20,26,.66)",
+                  color: dark ? "rgba(255,255,255,.66)" : "rgba(20,20,26,.66)",
                   textWrap: "pretty",
                 }}
               >

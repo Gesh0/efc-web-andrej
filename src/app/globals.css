@@ -83,6 +83,16 @@ a {
   .efc-rec { animation: none; }
 }
 
+/* spacing scale steps down one level on phones */
+@media (max-width: 767px) {
+  /* html:root outranks the :root defaults below */
+  html:root {
+    --section-y: var(--s128);
+    --head: var(--s32);
+    --gutter: var(--s32);
+  }
+}
+
 /* ----------------------------------------------------------------------------
    Interactive chrome — hover / press states the inline styles can't express
 ---------------------------------------------------------------------------- */
@@ -336,9 +346,18 @@ a {
 }
 
 :root {
-  /* vertical rhythm: the gap between two segments AND between a segment's
-     header and its content. Segments pad half of it top and bottom (~64px desktop). */
-  --section-y: clamp(40px, 4.4vw, 64px);
+  /* spacing scale: every gap, padding and margin on the home page is one of these */
+  --s8: 8px;
+  --s16: 16px;
+  --s32: 32px;
+  --s64: 64px;
+  --s128: 128px;
+  --s256: 256px;
+  /* what each step is for (mobile values in the media query below) */
+  --section-y: var(--s256); /* segment to segment; segments pad half top and bottom */
+  --head: var(--s64); /* segment header to its content */
+  --el: var(--s32); /* element to element inside a segment */
+  --gutter: var(--s64); /* page side margin */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);

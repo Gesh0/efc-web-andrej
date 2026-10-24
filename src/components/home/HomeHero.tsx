@@ -138,8 +138,9 @@ export default function HomeHero() {
       ref={root}
       className="relative flex flex-col items-center overflow-hidden"
       style={{
-        padding: "clamp(104px,13vh,140px) clamp(12px,2.2vw,30px) 0",
-        gap: "clamp(14px,1.8vh,22px)",
+        // clears the floating nav, then the scale: 64 to the container, half a segment below
+        padding: "calc(var(--s128) + var(--s32)) var(--gutter) 0",
+        gap: "var(--s64)",
         background: "#ffffff",
       }}
     >
@@ -186,7 +187,7 @@ export default function HomeHero() {
       <div
         data-hero="stage"
         className="relative grid w-full place-items-center"
-        style={{ zIndex: 6, maxWidth: 1280, paddingBottom: "clamp(40px,7vh,88px)", pointerEvents: "none" }}
+        style={{ zIndex: 6, maxWidth: 1280, paddingBottom: "calc(var(--section-y) / 2)", pointerEvents: "none" }}
       >
         <div data-hero="lift" className="grid w-full place-items-center" style={{ willChange: "transform" }}>
           <Image
