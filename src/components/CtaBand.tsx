@@ -15,20 +15,11 @@ export default function CtaBand({
   title,
   body,
   href,
-  label = "Започнете разговор",
-  steps,
-  wide = false,
 }: {
   id?: string;
   title: string;
   body: string;
   href: string;
-  /** button text */
-  label?: string;
-  /** optional "what happens next" list under the body */
-  steps?: string[];
-  /** home-segment layout: 1920px container, 32–64px gutter, --section-y rhythm */
-  wide?: boolean;
 }) {
   const bandRef = useRef<HTMLElement>(null);
   const haulRef = useRef<HTMLDivElement>(null);
@@ -60,14 +51,14 @@ export default function CtaBand({
   }, []);
 
   const external = !href.startsWith("/");
-  const buttonInner = (
+  const label = (
     <>
       <span
         className="relative inline-flex items-center overflow-hidden"
         style={{ height: 48, padding: "0 24px", borderRadius: "9px 3px 3px 9px", background: "#dc2626" }}
       >
         <span aria-hidden="true" className="efc-sweep" />
-        <span className="efc-split-ink">{label}</span>
+        <span className="efc-split-ink">Започнете разговор</span>
       </span>
       <span
         aria-hidden="true"
@@ -88,19 +79,14 @@ export default function CtaBand({
     <section
       id={id}
       ref={bandRef}
-      style={{
-        background: "#ffffff",
-        padding: wide
-          ? "calc(var(--section-y) / 2) clamp(32px,4vw,64px) clamp(32px,4vw,64px)"
-          : "clamp(18px,2.2vw,32px) clamp(10px,1.2vw,18px) clamp(10px,1.2vw,18px)",
-      }}
+      style={{ background: "#ffffff", padding: "clamp(18px,2.2vw,32px) clamp(10px,1.2vw,18px) clamp(10px,1.2vw,18px)" }}
     >
       <div
         className="relative mx-auto flex items-start overflow-hidden"
         style={{
-          maxWidth: wide ? 1920 : 1600,
+          maxWidth: 1600,
           minHeight: "clamp(360px,40vw,520px)",
-          borderRadius: wide ? 6 : 22,
+          borderRadius: 22,
           background: "radial-gradient(120% 130% at 8% 12%, #1b1418 0%, #0b0405 58%, #070304 100%)",
         }}
       >
@@ -168,26 +154,14 @@ export default function CtaBand({
           >
             {body}
           </p>
-          {steps && (
-            <ol className="efc-rise flex flex-col" style={{ ...delay(340), margin: 0, padding: 0, listStyle: "none", gap: 10 }}>
-              {steps.map((s, i) => (
-                <li key={s} className="flex items-baseline" style={{ gap: 14, fontSize: "clamp(14.5px,1.1vw,16px)", color: "rgba(255,255,255,.86)" }}>
-                  <span className="font-numeric" style={{ flex: "none", fontSize: 13, fontWeight: 600, color: "#ff5a5a" }}>
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  {s}
-                </li>
-              ))}
-            </ol>
-          )}
-          <div className="efc-rise" style={delay(steps ? 480 : 400)}>
+          <div className="efc-rise" style={delay(400)}>
             {external ? (
               <a href={href} className={btnClass} style={btnStyle}>
-                {buttonInner}
+                {label}
               </a>
             ) : (
               <Link href={href} className={btnClass} style={btnStyle}>
-                {buttonInner}
+                {label}
               </Link>
             )}
           </div>

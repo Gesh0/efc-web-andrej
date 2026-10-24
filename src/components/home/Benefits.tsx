@@ -3,14 +3,14 @@ import Image from "next/image";
 import Segment from "@/components/home/Segment";
 import MaterialIcon, { type MaterialName } from "@/components/MaterialIcon";
 import { delay } from "@/components/motion/Words";
+import { PAD, RED, rule } from "@/components/home/frame";
 
-const RED = "#e31e1e";
-const LINE = "1px solid rgba(20,20,26,.1)";
+const LINE = rule();
 
 /* ------------------------------------------------------------ small visuals */
 
 function Panel({ children }: { children: ReactNode }) {
-  return <div style={{ borderRadius: 6, background: "#f5f3f2", padding: "clamp(16px,1.6vw,22px)", fontSize: 14 }}>{children}</div>;
+  return <div style={{ background: "#f7f7f8", padding: 24, fontSize: 14 }}>{children}</div>;
 }
 
 function NoUpfront() {
@@ -42,7 +42,7 @@ function PayPerUse() {
       <div className="flex items-end" style={{ gap: 6, height: 120 }} aria-hidden="true">
         {LOAD.map((v, i) => (
           <div key={i} className="flex flex-1 flex-col items-center" style={{ gap: 6, height: "100%", justifyContent: "flex-end" }}>
-            <span style={{ width: "100%", height: `${v}%`, borderRadius: 3, background: i === 10 ? RED : "rgba(227,30,30,.35)" }} />
+            <span style={{ width: "100%", height: `${v}%`, background: i === 10 ? RED : "rgba(227,30,30,.35)" }} />
             <span style={{ fontSize: 10.5, color: "rgba(20,20,26,.45)" }}>{MONTHS[i]}</span>
           </div>
         ))}
@@ -62,8 +62,8 @@ function Scale() {
         <span>Првата нарачка</span>
         <span style={{ color: RED }}>Сезонски врв</span>
       </div>
-      <div className="relative" style={{ height: 8, marginTop: 12, borderRadius: 99, background: "rgba(20,20,26,.08)" }}>
-        <span className="absolute inset-y-0 left-0" style={{ width: "100%", borderRadius: 99, background: `linear-gradient(90deg, rgba(227,30,30,.25), ${RED})` }} />
+      <div className="relative" style={{ height: 8, marginTop: 12, background: "rgba(20,20,26,.08)" }}>
+        <span className="absolute inset-y-0 left-0" style={{ width: "100%", background: `linear-gradient(90deg, rgba(227,30,30,.25), ${RED})` }} />
       </div>
       <div style={{ marginTop: 12, fontSize: 13, color: "rgba(20,20,26,.6)" }}>Без минимум и без горна граница. Ист договор, без нов магацин.</div>
     </Panel>
@@ -74,10 +74,10 @@ function Custody() {
   return (
     <Panel>
       <div className="flex" style={{ gap: 4, height: 34 }}>
-        <span className="grid flex-4 place-items-center" style={{ borderRadius: 4, background: RED, color: "#fff", fontWeight: 600, fontSize: 13 }}>
+        <span className="grid flex-4 place-items-center" style={{ background: RED, color: "#fff", fontWeight: 600, fontSize: 13 }}>
           EFC одговара
         </span>
-        <span className="grid flex-1 place-items-center" style={{ borderRadius: 4, background: "rgba(20,20,26,.1)", fontWeight: 600, fontSize: 13 }}>
+        <span className="grid flex-1 place-items-center" style={{ background: "rgba(20,20,26,.1)", fontWeight: 600, fontSize: 13 }}>
           ELS
         </span>
       </div>
@@ -101,7 +101,7 @@ function StockTable() {
         <div key={name} className="flex items-center justify-between" style={{ gap: 12, padding: "8px 0", borderBottom: LINE }}>
           <span>{name}</span>
           <span className="flex items-center" style={{ gap: 10 }}>
-            <span style={{ width: 80, height: 6, borderRadius: 99, background: "rgba(20,20,26,.08)", overflow: "hidden" }}>
+            <span style={{ width: 80, height: 6, background: "rgba(20,20,26,.08)", overflow: "hidden" }}>
               <span style={{ display: "block", width: `${pct}%`, height: "100%", background: pct < 15 ? RED : "#14141a" }} />
             </span>
             <span className="font-numeric" style={{ minWidth: 28, textAlign: "right" }}>{qty}</span>
@@ -122,7 +122,7 @@ function HandOff() {
       {items.map((t) => (
         <span
           key={t}
-          style={{ padding: "8px 12px", borderRadius: 6, fontSize: 14, background: on ? RED : "#ffffff", color: on ? "#ffffff" : "#14141a", border: on ? "none" : LINE }}
+          style={{ padding: "8px 12px", fontSize: 14, background: on ? RED : "#ffffff", color: on ? "#ffffff" : "#14141a", border: on ? "none" : LINE }}
         >
           {t}
         </span>
@@ -142,7 +142,7 @@ function HandOff() {
 
 function Photo({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="relative overflow-hidden" style={{ minHeight: 200, height: "100%", borderRadius: 6, background: "#101014" }}>
+    <div className="relative overflow-hidden" style={{ minHeight: 200, height: "100%", background: "#101014" }}>
       <Image src={src} alt={alt} fill sizes="(max-width: 1100px) 100vw, 900px" className="object-cover" style={{ filter: "saturate(.8)" }} />
     </div>
   );
@@ -164,41 +164,41 @@ const BENEFITS: Benefit[] = [
   { icon: "storefront", title: "Вие се фокусирате на продажбата", body: "Времето што одеше на пакување и курири сега оди на продавање.", visual: <HandOff /> },
 ];
 
-/** Render-style bordered grid: rows of one full-width cell or two equal cells, each claim paired with its proof. */
+/** Bordered grid rail to rail: rows of one full-width cell or two equal cells, each claim paired with its proof. */
 export default function Benefits() {
   return (
-    <Segment id="why" title="Што добивате кога логистиката е кај нас" intro="Сè што повеќе не плаќате, не водите и не ве загрижува.">
-      <div data-reveal className="grid grid-cols-[minmax(0,1fr)] overflow-hidden lg:grid-cols-2" style={{ border: LINE, borderRadius: 6 }}>
+    <Segment id="why" label="Зошто EFC" title="Што добивате кога логистиката е кај нас." lead="Сè што повеќе не плаќате, не водите и не ве загрижува.">
+      <div data-reveal className="grid grid-cols-1 lg:grid-cols-2">
         {BENEFITS.map((b, i) => {
           // a half cell is the left of its pair when an even number of half cells precede it
           const halvesBefore = BENEFITS.slice(0, i).filter((x) => !x.full).length;
           const left = !b.full && halvesBefore % 2 === 0;
           const lastRow = i >= BENEFITS.length - (BENEFITS[BENEFITS.length - 1].full ? 1 : 2);
           const head = (
-            <div className="flex flex-col" style={{ gap: 12 }}>
-              <span className="grid place-items-center" style={{ width: 40, height: 40, borderRadius: 8, background: "#f5f3f2", color: RED }}>
+            <div className="flex flex-col" style={{ gap: 14 }}>
+              <span className="grid place-items-center" style={{ width: 40, height: 40, background: "#fdeceb", color: RED }}>
                 <MaterialIcon name={b.icon} size={22} />
               </span>
-              <h3 className="efc-display" style={{ fontSize: "clamp(20px,1.8vw,28px)", lineHeight: 1.12, color: "#101014" }}>
+              <h3 className="efc-display" style={{ fontSize: "clamp(20px,1.7vw,26px)", lineHeight: 1.15, color: "#101014" }}>
                 {b.title}
               </h3>
-              <p style={{ margin: 0, maxWidth: "48ch", fontSize: "clamp(14.5px,1.05vw,16px)", lineHeight: 1.6, color: "rgba(20,20,26,.68)", textWrap: "pretty" }}>{b.body}</p>
+              <p style={{ margin: 0, maxWidth: "48ch", fontSize: 15.5, lineHeight: 1.6, color: "rgba(20,20,26,.66)", textWrap: "pretty" }}>{b.body}</p>
             </div>
           );
           return (
             <article
               key={b.title}
               className={[
-                "efc-rise flex min-w-0 flex-col border-[rgba(20,20,26,.1)]",
+                "efc-rise flex min-w-0 flex-col border-[rgba(20,20,26,.08)]",
                 i < BENEFITS.length - 1 ? "border-b" : "",
                 lastRow ? "lg:border-b-0" : "",
                 left ? "lg:border-r" : "",
                 b.full ? "lg:col-span-2 lg:grid lg:grid-cols-2 lg:items-center" : "",
               ].join(" ")}
-              style={{ ...delay((i % 2) * 90), gap: "clamp(20px,2.4vw,40px)", padding: "clamp(22px,2.6vw,40px)" }}
+              style={{ ...delay((i % 2) * 90), gap: PAD, padding: PAD, minHeight: b.full ? undefined : 380 }}
             >
               {head}
-              <div className={b.full ? "" : "mt-auto"} style={{ minHeight: b.full ? 220 : undefined }}>
+              <div className={b.full ? "" : "mt-auto"} style={{ minHeight: b.full ? 240 : undefined }}>
                 {b.visual}
               </div>
             </article>

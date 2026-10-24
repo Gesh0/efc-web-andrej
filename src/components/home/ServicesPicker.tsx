@@ -1,18 +1,17 @@
 "use client";
 
-import { Fragment, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import Image from "next/image";
 import Link from "next/link";
-import { delay } from "@/components/motion/Words";
 import Segment from "@/components/home/Segment";
 import MaterialIcon, { type MaterialName } from "@/components/MaterialIcon";
 import { ArrowUpRight } from "@/components/icons";
+import { Card, Pill, Row } from "@/components/home/records";
+import { EASE, LINE, PAD, RED, rule } from "@/components/home/frame";
 
-const EASE = "cubic-bezier(.23,1,.32,1)";
-const RED = "#e31e1e";
+type StepKey = "import" | "in" | "sort" | "store" | "pack" | "fiscal" | "ship" | "return";
 
-type StepKey = "import" | "in" | "store" | "sort" | "pack" | "fiscal" | "ship" | "return";
-
-/** The parts of the centre a request can use, in the order goods move through it. */
+/** The parts of the centre, in the order goods move through it. */
 const STEPS: { key: StepKey; label: string; icon: MaterialName }[] = [
   { key: "import", label: "Увоз", icon: "flight_land" },
   { key: "in", label: "Прием", icon: "move_to_inbox" },
@@ -24,198 +23,251 @@ const STEPS: { key: StepKey; label: string; icon: MaterialName }[] = [
   { key: "return", label: "Враќање", icon: "assignment_return" },
 ];
 
-type Request = { name: string; quote: string; uses: StepKey[]; title: string; body: string; points: string[] };
+type Service = {
+  name: string;
+  quote: string;
+  uses: StepKey[];
+  lead: string;
+  points: string[];
+  img: string;
+  alt: string;
+  record: ReactNode;
+};
 
-const REQUESTS: Request[] = [
+const SERVICES: Service[] = [
   {
     name: "Целосен фулфилмент",
     quote: "„Сакам сè да биде решено“",
     uses: ["in", "store", "pack", "fiscal", "ship", "return"],
-    title: "Ние ја водиме целата логистика",
-    body: "Ја примаме вашата стока, ја чуваме, ја пакуваме под камера и ја предаваме на ELS. Купувачот ја добива следниот ден. Вие само продавате.",
-    points: ["Пакување под камера", "Достава следниот ден преку ELS", "Залиха и нарачки на веб"],
+    lead: "Ја примаме стоката, ја чуваме, ја пакуваме под камера и ја предаваме на ELS. Купувачот ја добива следниот ден. Вие само продавате.",
+    points: ["Пакување под камера", "Фискална сметка", "Достава следниот ден", "Залиха на веб"],
+    img: "/assets/efc-pick-pack.jpg",
+    alt: "Пакување нарачка во EFC",
+    record: (
+      <Card title="Нарачка 20418" meta={<Pill>Испратено</Pill>}>
+        <Row label="Примено" value="09:14" />
+        <Row label="Спакувано · Станица 03" value="14:32" />
+        <Row label="Фискална ФС-88213" value="✓" />
+        <Row label="Предадено на ELS" value="15:10" />
+      </Card>
+    ),
   },
   {
-    name: "Сортирање и поделба на роба",
+    name: "Сортирање и поделба",
     quote: "„Стоката треба да се подели“",
     uses: ["import", "in", "sort", "ship"],
-    title: "Пристигнува, се дели и заминува",
-    body: "Стоката што пристигнува ја распределуваме по артикли, продавници или дестинации и ја испраќаме понатаму, без долго складирање.",
-    points: ["Рампа за камион-шлепер", "Јавен царински склад до нас", "Поделба според ваша листа"],
+    lead: "Стоката пристигнува, ја распределуваме по артикли, продавници или дестинации и заминува, без долго складирање.",
+    points: ["Рампа за шлепер", "Царински склад до нас", "Поделба по ваша листа"],
+    img: "/assets/services-details.webp",
+    alt: "Камиони на рампите",
+    record: (
+      <Card title="Поделба П-1120" meta="3 дестинации">
+        <Row label="Скопје · 4 палети" value={<Pill>готово</Pill>} />
+        <Row label="Битола · 2 палети" value={<Pill>готово</Pill>} />
+        <Row label="Охрид · 1 палета" value={<Pill tone="warn">во тек</Pill>} />
+      </Card>
+    ),
   },
   {
     name: "Складирање",
     quote: "„Ми треба само простор“",
     uses: ["in", "store"],
-    title: "Простор и евиденција, без пакување",
-    body: "Вашата стока стои кај нас, изброена, проверена и евидентирана. Ја подигате или ја испраќаме кога ќе ви треба.",
-    points: ["Палетно или по артикл", "Увид во залихата на веб", "Обезбеден објект 24/7"],
+    lead: "Простор и евиденција, без пакување. Стоката е изброена, проверена и има своја локација.",
+    points: ["Палетно или по артикл", "Увид во залиха на веб", "Обезбеден 24/7"],
+    img: "/assets/factory.webp",
+    alt: "Палетни регали",
+    record: (
+      <Card title="Залиха" meta="пред 2 мин">
+        <Row label="Регал B · Полица 14" value={<b>186</b>} />
+        <Row label="Регал C · Полица 02" value={<b>97</b>} />
+        <Row label="Регал A · Полица 07" value={<Pill tone="warn">14 · ниско</Pill>} />
+      </Card>
+    ),
   },
   {
-    name: "Фискализација и декларации",
-    quote: "„Ми требаат само помошните услуги“",
+    name: "Фискализација",
+    quote: "„Само помошни услуги“",
     uses: ["fiscal"],
-    title: "Помошните работи околу пратката",
-    body: "Издаваме фискални сметки, лепиме декларации и етикети и ги правиме другите ситни работи што ви одземаат време.",
-    points: ["Фискални сметки", "Декларации на македонски", "Етикетирање и препакување"],
+    lead: "Фискални сметки, декларации на македонски и другите помошни работи околу пратката.",
+    points: ["Фискални сметки", "Декларации", "Етикетирање"],
+    img: "/assets/efc-packing-station.jpg",
+    alt: "Станица за пакување и етикетирање",
+    record: (
+      <Card title="Фискална сметка ФС-88213" meta={<Pill>издадена</Pill>}>
+        <Row label="Парфем 50 ml × 1" value="1.890" />
+        <Row label="Декларација МК" value={<Pill>залепена</Pill>} />
+      </Card>
+    ),
   },
   {
-    name: "Палетно работење (B2B)",
-    quote: "„Испраќам палети до продавници“",
+    name: "Палетно (B2B)",
+    quote: "„Палети до продавници“",
     uses: ["in", "store", "ship"],
-    title: "Цели палети, до вашите B2B клиенти",
-    body: "Примаме, чуваме и испраќаме цели палети до продавници, синџири и дистрибутери.",
+    lead: "Примаме, чуваме и испраќаме цели палети до продавници, синџири и дистрибутери.",
     points: ["Прием од шлепер", "Палетно складирање", "Испорака на палети"],
+    img: "/assets/containerpackages.avif",
+    alt: "Палети во магацинот",
+    record: (
+      <Card title="Испорака Б2Б-044" meta="Маркет ДООЕЛ">
+        <Row label="Палети" value={<b>6</b>} />
+        <Row label="Тргнува" value="Утре · 08:00" />
+      </Card>
+    ),
   },
   {
     name: "Повратни пратки",
-    quote: "„Што правам со вратените пакети?“",
+    quote: "„Вратени пакети“",
     uses: ["return", "store"],
-    title: "Повратите, проверени под камера",
-    body: "Вратените пакети ги отвораме под камера. Неоштетените артикли се враќаат во залиха, а вие добивате евиденција за секој поврат.",
-    points: ["Снимка за секое отворање", "Враќање во залиха", "Евиденција зошто е вратено"],
+    lead: "Ги отвораме под камера. Неоштетеното се враќа во залиха, а за секој поврат имате запис.",
+    points: ["Снимка за секој поврат", "Назад во залиха", "Евиденција"],
+    img: "/assets/efc-van-dock.avif",
+    alt: "Пратки на рампата",
+    record: (
+      <Card title="Поврат В-311" meta={<Pill tone="warn">REC</Pill>}>
+        <Row label="Парфем 50 ml" value={<Pill>во залиха</Pill>} />
+        <Row label="Кутија" value={<Pill tone="warn">оштетена</Pill>} />
+        <Row label="Причина" value="откажано" />
+      </Card>
+    ),
   },
 ];
 
-/** Process strip + copy for the picked request. Shared by the desktop side panel and the mobile inline panel. */
-function Detail({ req, active }: { req: Request; active: number }) {
-  return (
-    <>
-      <div style={{ overflowX: "auto", margin: "0 -4px", padding: "0 4px" }}>
-        <ol className="relative flex justify-between" style={{ minWidth: 640, margin: 0, padding: 0, listStyle: "none", gap: 8 }}>
-          {/* rail runs from the first icon's centre to the last one's */}
-          <span aria-hidden="true" className="absolute" style={{ left: 36, right: 36, top: 23, height: 2, background: "rgba(20,20,26,.1)" }} />
-          {STEPS.map((s) => {
-            const on = req.uses.includes(s.key);
-            return (
-              <li key={s.key} className="relative flex flex-col items-center text-center" style={{ gap: 10, width: 72 }}>
-                <span
-                  className="grid place-items-center"
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 8,
-                    border: `1px solid ${on ? RED : "rgba(20,20,26,.14)"}`,
-                    background: on ? RED : "#ffffff",
-                    color: on ? "#ffffff" : "rgba(20,20,26,.45)",
-                    boxShadow: on ? "0 10px 24px -12px rgba(227,30,30,.8)" : "none",
-                    transition: `background-color 320ms ${EASE}, border-color 320ms ${EASE}, color 320ms ${EASE}, box-shadow 320ms ${EASE}`,
-                  }}
-                >
-                  <MaterialIcon name={s.icon} size={22} />
-                </span>
-                <span style={{ fontSize: 13, fontWeight: on ? 500 : 400, color: on ? "#14141a" : "rgba(20,20,26,.5)", transition: `color 320ms ${EASE}` }}>
-                  {s.label}
-                </span>
-              </li>
-            );
-          })}
-        </ol>
-      </div>
-
-      <div key={active} className="flex flex-1 flex-col" style={{ gap: "clamp(20px,2.4vw,32px)", animation: `efc-swap 420ms ${EASE}` }}>
-        <div className="flex flex-col" style={{ gap: 12 }}>
-          <h3 className="efc-display" style={{ fontSize: "clamp(22px,2vw,30px)", lineHeight: 1.1, color: "#101014" }}>
-            {req.title}
-          </h3>
-          <p style={{ margin: 0, maxWidth: "62ch", fontSize: "clamp(15px,1.1vw,16.5px)", lineHeight: 1.6, color: "rgba(20,20,26,.7)", textWrap: "pretty" }}>
-            {req.body}
-          </p>
-        </div>
-        {/* points sit on the panel floor so the panel never shows an empty block */}
-        <ul
-          className="grid"
-          style={{ marginTop: "auto", padding: 0, listStyle: "none", gap: 8, gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,180px),1fr))" }}
-        >
-          {req.points.map((p) => (
-            <li
-              key={p}
-              className="flex items-start"
-              style={{ gap: 10, padding: "14px 16px", borderRadius: 6, background: "#ffffff", fontSize: 15, lineHeight: 1.4, color: "#14141a" }}
-            >
-              <span aria-hidden="true" style={{ color: RED, fontWeight: 700 }}>✓</span>
-              <span>{p}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </>
-  );
-}
-
-/** Client requests on the left; the right panel lights the parts of the centre that handle the picked one. */
+/**
+ * Attio-style: a sticky index on the left, the services stacked on the right under a sticky
+ * process strip. Whichever block sits at the reading line drives both the index and the strip.
+ */
 export default function ServicesPicker() {
   const [active, setActive] = useState(0);
-  const req = REQUESTS[active];
+  const refs = useRef<(HTMLElement | null)[]>([]);
+  const uses = SERVICES[active].uses;
+
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && setActive(Number((e.target as HTMLElement).dataset.i))),
+      { rootMargin: "-40% 0px -55% 0px" },
+    );
+    refs.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
+  const go = (i: number) => refs.current[i]?.scrollIntoView({ behavior: "smooth", block: "start" });
 
   return (
     <Segment
       id="solutions"
-      title="Цел логистички центар зад вашата продавница"
-      intro="Простор, рампа, тим, опрема и систем за евиденција. Од нив ги составуваме услугите што вам ви требаат, вклучително и оние што не се на листата."
+      label="Услуги"
+      title="Цел логистички центар зад вашата продавница."
+      lead="Простор, рампа, тим, опрема и систем за евиденција. Од нив ги составуваме услугите што ви требаат, и оние што не се на листата."
     >
-      <div
-        data-reveal
-        className="efc-rise grid grid-cols-[minmax(0,1fr)] items-start lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)]"
-        style={{ ...delay(260), gap: "clamp(12px,1.4vw,20px)" }}
-      >
-        {/* requests */}
-        <div className="flex min-w-0 flex-col" role="group" aria-label="Изберете што ви треба" style={{ gap: 8 }}>
-          {REQUESTS.map((r, i) => {
-            const on = i === active;
-            return (
-              <Fragment key={r.name}>
-                <button
-                  type="button"
-                  aria-pressed={on}
-                  aria-controls="solutions-panel"
-                  onClick={() => setActive(i)}
-                  className="efc-press flex cursor-pointer items-center justify-between text-left"
-                  style={{
-                    gap: 16,
-                    padding: "13px 18px",
-                    borderRadius: 6,
-                    border: `1px solid ${on ? "#101014" : "rgba(20,20,26,.12)"}`,
-                    background: on ? "#101014" : "#ffffff",
-                    color: on ? "#ffffff" : "#14141a",
-                    fontFamily: "inherit",
-                    transition: `background-color 260ms ${EASE}, color 260ms ${EASE}, border-color 260ms ${EASE}`,
-                  }}
-                >
-                  <span className="flex min-w-0 flex-col" style={{ gap: 2 }}>
-                    <span style={{ fontSize: 16, fontWeight: 500, lineHeight: 1.3 }}>{r.name}</span>
-                    <span style={{ fontSize: 13.5, lineHeight: 1.35, color: on ? "rgba(255,255,255,.62)" : "rgba(20,20,26,.52)" }}>{r.quote}</span>
-                  </span>
-                  <span
-                    aria-hidden="true"
-                    style={{ flex: "none", width: 8, height: 8, borderRadius: "50%", background: on ? RED : "rgba(20,20,26,.16)", transition: `background-color 260ms ${EASE}` }}
-                  />
-                </button>
-                {on && (
-                  <div className="flex min-w-0 flex-col lg:hidden" style={{ gap: 24, padding: 20, borderRadius: 6, background: "#f5f3f2" }}>
-                    <Detail req={r} active={i} />
-                  </div>
-                )}
-              </Fragment>
-            );
-          })}
-          <Link href="/services" className="efc-link inline-flex flex-wrap items-baseline self-start" style={{ gap: "4px 8px", marginTop: 10, fontSize: 15, color: "#14141a" }}>
-            <span style={{ color: "rgba(20,20,26,.6)" }}>Нешто друго?</span>
-            <span className="inline-flex items-center" style={{ gap: 6, fontWeight: 600 }}>
-              Погледнете ги сите услуги
-              <ArrowUpRight size={14} />
-            </span>
-          </Link>
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,3fr)_minmax(0,9fr)]">
+        {/* index */}
+        <nav aria-label="Услуги" className="hidden lg:block" style={{ borderRight: rule(), padding: `${PAD} 24px ${PAD} ${PAD}` }}>
+          <ul className="sticky flex flex-col" style={{ top: 112, gap: 4, margin: 0, padding: 0, listStyle: "none" }}>
+            {SERVICES.map((s, i) => {
+              const on = i === active;
+              return (
+                <li key={s.name}>
+                  <button
+                    type="button"
+                    onClick={() => go(i)}
+                    aria-current={on ? "true" : undefined}
+                    className="flex w-full cursor-pointer flex-col items-start text-left"
+                    style={{ padding: "8px 0 8px 14px", border: 0, borderLeft: `2px solid ${on ? RED : LINE}`, background: "transparent", fontFamily: "inherit", transition: `border-color 240ms ${EASE}` }}
+                  >
+                    <span style={{ fontSize: 15, fontWeight: on ? 600 : 500, color: on ? "#14141a" : "#a1a1a8", transition: `color 240ms ${EASE}` }}>{s.name}</span>
+                    <span style={{ fontSize: 12.5, color: "#a1a1a8" }}>{s.quote}</span>
+                  </button>
+                </li>
+              );
+            })}
+            <li style={{ marginTop: 24 }}>
+              <Link href="/services" className="efc-link inline-flex items-center" style={{ gap: 6, fontSize: 14, color: "#14141a" }}>
+                <span style={{ color: "rgba(20,20,26,.6)" }}>Нешто друго?</span>
+                <b>Сите услуги</b>
+                <ArrowUpRight size={13} />
+              </Link>
+            </li>
+          </ul>
+        </nav>
 
-        {/* the centre */}
-        <div
-          id="solutions-panel"
-          aria-live="polite"
-          className="hidden min-w-0 flex-col lg:flex"
-          style={{ gap: "clamp(24px,3vw,40px)", padding: "clamp(20px,2.6vw,40px)", borderRadius: 6, background: "#f5f3f2", alignSelf: "stretch" }}
-        >
-          <Detail req={req} active={active} />
+        <div className="min-w-0">
+          {/* process strip: stays in view and follows the active service */}
+          <div className="sticky" style={{ top: 80, zIndex: 4, background: "rgba(255,255,255,.96)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", borderBottom: rule(), padding: `20px ${PAD}` }}>
+            <div className="flex items-baseline justify-between" style={{ gap: 12, marginBottom: 16, fontSize: 13, color: "rgba(20,20,26,.6)" }}>
+              <span>
+                Делови од центарот што ги користи: <b style={{ color: "#14141a" }}>{SERVICES[active].name}</b>
+              </span>
+              <span className="font-numeric">
+                {uses.length} / {STEPS.length}
+              </span>
+            </div>
+            <div style={{ overflowX: "auto" }}>
+              <ol className="relative flex justify-between" style={{ minWidth: 560, margin: 0, padding: 0, listStyle: "none", gap: 6 }}>
+                <span aria-hidden="true" className="absolute" style={{ left: 28, right: 28, top: 20, height: 1, background: "rgba(20,20,26,.12)" }} />
+                {STEPS.map((s) => {
+                  const on = uses.includes(s.key);
+                  return (
+                    <li key={s.key} className="relative flex flex-col items-center text-center" style={{ gap: 8, width: 64 }}>
+                      <span
+                        className="grid place-items-center"
+                        style={{
+                          width: 40,
+                          height: 40,
+                          border: `1px solid ${on ? RED : "rgba(20,20,26,.14)"}`,
+                          background: on ? RED : "#ffffff",
+                          color: on ? "#ffffff" : "rgba(20,20,26,.4)",
+                          transition: `background-color 260ms ${EASE}, border-color 260ms ${EASE}, color 260ms ${EASE}`,
+                        }}
+                      >
+                        <MaterialIcon name={s.icon} size={20} />
+                      </span>
+                      <span style={{ fontSize: 12, fontWeight: on ? 600 : 400, color: on ? "#14141a" : "#a1a1a8", transition: `color 260ms ${EASE}` }}>{s.label}</span>
+                    </li>
+                  );
+                })}
+              </ol>
+            </div>
+          </div>
+
+          {SERVICES.map((s, i) => (
+            <article
+              key={s.name}
+              ref={(el) => {
+                refs.current[i] = el;
+              }}
+              data-i={i}
+              style={{ borderBottom: i < SERVICES.length - 1 ? rule() : undefined, scrollMarginTop: 200 }}
+            >
+              <div className="flex flex-col" style={{ gap: 16, maxWidth: 760, padding: `${PAD} ${PAD} 28px` }}>
+                <h3 style={{ margin: 0, fontSize: 20, fontWeight: 600, lineHeight: 1.35, letterSpacing: "-.015em" }}>
+                  {s.name}. <span style={{ color: "#a1a1a8" }}>{s.lead}</span>
+                </h3>
+                <ul className="flex flex-wrap" style={{ gap: "8px 24px", margin: 0, padding: 0, listStyle: "none", fontSize: 14.5 }}>
+                  {s.points.map((p) => (
+                    <li key={p} className="flex items-baseline" style={{ gap: 6 }}>
+                      <span aria-hidden="true" style={{ color: RED, fontWeight: 700 }}>✓</span>
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              {/* stage: photo and record swap sides from block to block */}
+              <div className="grid grid-cols-1 items-center md:grid-cols-2" style={{ gap: 24, padding: PAD, borderTop: rule(), background: "#f7f7f8" }}>
+                <div className={`relative overflow-hidden ${i % 2 ? "md:order-2" : ""}`} style={{ aspectRatio: "4 / 3", background: "#101014" }}>
+                  <Image src={s.img} alt={s.alt} fill sizes="(max-width: 768px) 100vw, 480px" className="object-cover" style={{ filter: "saturate(.85)" }} />
+                </div>
+                <div className={i % 2 ? "md:order-1" : ""}>{s.record}</div>
+              </div>
+            </article>
+          ))}
+
+          <div className="lg:hidden" style={{ padding: PAD, borderTop: rule() }}>
+            <Link href="/services" className="efc-link inline-flex items-center" style={{ gap: 6, fontSize: 15, color: "#14141a" }}>
+              <span style={{ color: "rgba(20,20,26,.6)" }}>Нешто друго?</span>
+              <b>Сите услуги</b>
+              <ArrowUpRight size={13} />
+            </Link>
+          </div>
         </div>
       </div>
     </Segment>

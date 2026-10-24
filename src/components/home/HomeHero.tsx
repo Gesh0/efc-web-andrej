@@ -5,6 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
+import { Frame, PAD, RED } from "@/components/home/frame";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -133,83 +134,50 @@ export default function HomeHero() {
   );
 
   return (
-    <section
-      id="top"
-      ref={root}
-      className="relative flex flex-col items-center overflow-hidden"
-      style={{
-        padding: "clamp(104px,13vh,140px) clamp(12px,2.2vw,30px) 0",
-        gap: "clamp(14px,1.8vh,22px)",
-        background: "#ffffff",
-      }}
-    >
-      <h1
-        className="efc-display"
-        aria-label={`${TITLE.join(" ")} ${ROTATING[0]}`}
-        style={{
-          margin: "0 auto",
-          maxWidth: "34ch",
-          textAlign: "center",
-          fontSize: "clamp(27px,4.6vw,58px)",
-          lineHeight: 1.08,
-          letterSpacing: "0.005em",
-          color: "#14141a",
-          textWrap: "balance",
-        }}
-      >
-        {TITLE.map((w) => (
-          <span key={w}>
-            <span data-hero="word" className="efc-pre inline-block">
-              {w}
-            </span>{" "}
-          </span>
-        ))}
-        <span data-hero="word" className="efc-pre inline-block">
-          <span
-            ref={rotRef}
-            aria-hidden="true"
-            style={{
-              position: "relative",
-              display: "inline-block",
-              verticalAlign: "bottom",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              paddingBottom: ".1em",
-              marginBottom: "-.1em",
-            }}
+    <section id="top" ref={root} className="relative" style={{ paddingTop: 64 }}>
+      <Frame>
+        {/* heading bottom-left, container top-right; they meet on the centre line */}
+        <div className="grid grid-cols-1 items-stretch lg:grid-cols-2" style={{ minHeight: "clamp(520px,78vh,780px)", padding: PAD, columnGap: 32, rowGap: 32 }}>
+          <h1
+            className="efc-display order-2 self-end lg:order-1"
+            aria-label={`${TITLE.join(" ")} ${ROTATING[0]}`}
+            style={{ fontSize: "clamp(40px,5.4vw,80px)", lineHeight: 1.02, color: "#14141a", textWrap: "balance" }}
           >
-            <span className="inline-block">{ROTATING[0]}</span>
-          </span>
-        </span>
-      </h1>
+            {TITLE.map((w) => (
+              <span key={w}>
+                <span data-hero="word" className="efc-pre inline-block">
+                  {w}
+                </span>{" "}
+              </span>
+            ))}
+            <span data-hero="word" className="efc-pre inline-block" style={{ color: RED }}>
+              <span
+                ref={rotRef}
+                aria-hidden="true"
+                style={{ position: "relative", display: "inline-block", verticalAlign: "bottom", whiteSpace: "nowrap", overflow: "hidden", paddingBottom: ".1em", marginBottom: "-.1em" }}
+              >
+                <span className="inline-block">{ROTATING[0]}</span>
+              </span>
+            </span>
+          </h1>
 
-      <div
-        data-hero="stage"
-        className="relative grid w-full place-items-center"
-        style={{ zIndex: 6, maxWidth: 1280, paddingBottom: "clamp(40px,7vh,88px)", pointerEvents: "none" }}
-      >
-        <div data-hero="lift" className="grid w-full place-items-center" style={{ willChange: "transform" }}>
-          <Image
-            data-hero="container"
-            src="/assets/efc-container-hero.png"
-            alt="EFC контејнер"
-            width={1448}
-            height={1086}
-            preload
-            sizes="(max-width: 900px) 78vw, 680px"
-            className="efc-pre"
-            style={{
-              position: "relative",
-              zIndex: 2,
-              width: "min(78%, 680px, 64vh)",
-              height: "auto",
-              transformOrigin: "50% 55%",
-              filter: CONTAINER_SHADOW,
-              pointerEvents: "auto",
-            }}
-          />
+          <div data-hero="stage" className="relative order-1 grid self-start place-items-center lg:order-2" style={{ zIndex: 2, pointerEvents: "none" }}>
+            <div data-hero="lift" className="grid w-full place-items-center" style={{ willChange: "transform" }}>
+              <Image
+                data-hero="container"
+                src="/assets/efc-container-hero.png"
+                alt="EFC контејнер"
+                width={1448}
+                height={1086}
+                preload
+                sizes="(max-width: 1024px) 90vw, 640px"
+                className="efc-pre"
+                style={{ width: "100%", maxWidth: 640, height: "auto", transformOrigin: "50% 55%", filter: CONTAINER_SHADOW, pointerEvents: "auto" }}
+              />
+            </div>
+          </div>
         </div>
-      </div>
+      </Frame>
     </section>
   );
 }

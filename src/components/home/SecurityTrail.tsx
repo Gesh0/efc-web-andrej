@@ -3,47 +3,8 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Image from "next/image";
 import Segment from "@/components/home/Segment";
-import MaterialIcon, { type MaterialName } from "@/components/MaterialIcon";
-
-const EASE = "cubic-bezier(.23,1,.32,1)";
-const RED = "#e31e1e";
-const GREEN = "#1f9d55";
-
-/* ------------------------------------------------------------ record cards */
-
-function Card({ icon, title, meta, children }: { icon: MaterialName; title: string; meta?: string; children: ReactNode }) {
-  return (
-    <div style={{ borderRadius: 6, background: "#ffffff", color: "#14141a", boxShadow: "0 24px 50px -28px rgba(10,10,14,.6)", overflow: "hidden", fontSize: 14 }}>
-      <div className="flex items-center justify-between" style={{ gap: 12, padding: "12px 16px", borderBottom: "1px solid rgba(20,20,26,.08)" }}>
-        <span className="inline-flex items-center" style={{ gap: 8, fontWeight: 600 }}>
-          <span style={{ color: RED, display: "inline-flex" }}>
-            <MaterialIcon name={icon} size={18} />
-          </span>
-          {title}
-        </span>
-        {meta && <span className="font-numeric" style={{ fontSize: 12.5, color: "rgba(20,20,26,.5)" }}>{meta}</span>}
-      </div>
-      <div style={{ padding: "4px 16px" }}>{children}</div>
-    </div>
-  );
-}
-
-function Row({ label, value }: { label: ReactNode; value: ReactNode }) {
-  return (
-    <div className="flex items-center justify-between" style={{ gap: 12, padding: "10px 0", borderBottom: "1px solid rgba(20,20,26,.06)" }}>
-      <span>{label}</span>
-      <span className="font-numeric inline-flex items-center" style={{ gap: 8, whiteSpace: "nowrap" }}>{value}</span>
-    </div>
-  );
-}
-
-function Pill({ tone = "ok", children }: { tone?: "ok" | "warn" | "muted"; children: ReactNode }) {
-  const c = tone === "ok" ? GREEN : tone === "warn" ? RED : "rgba(20,20,26,.55)";
-  const bg = tone === "ok" ? "rgba(31,157,85,.1)" : tone === "warn" ? "rgba(227,30,30,.09)" : "rgba(20,20,26,.06)";
-  return <span style={{ fontSize: 12, fontWeight: 600, padding: "2px 9px", borderRadius: 999, color: c, background: bg, fontFamily: "var(--font-sans)" }}>{children}</span>;
-}
-
-/* ------------------------------------------------------------------ steps */
+import { Card, Pill, Row } from "@/components/home/records";
+import { EASE, PAD, RED, rule } from "@/components/home/frame";
 
 type Step = { title: string; body: string; img: string; alt: string; record: ReactNode };
 
@@ -116,9 +77,9 @@ const STEPS: Step[] = [
 ];
 
 /**
- * "Follow one order". Desktop: steps scroll on the left while a pinned panel on the right
- * swaps photo + record for the step at the reading line. Mobile: each step carries its own
- * photo + record inline, so the same story reads top to bottom.
+ * "Follow one order". Desktop: the steps run down the left cell while the right cell pins a
+ * photo + record that follow the step at the reading line. Mobile: each step carries its own
+ * photo + record inline.
  */
 export default function SecurityTrail() {
   const [active, setActive] = useState(0);
@@ -127,20 +88,16 @@ export default function SecurityTrail() {
   useEffect(() => {
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => e.isIntersecting && setActive(Number((e.target as HTMLElement).dataset.i))),
-      { rootMargin: "-45% 0px -45% 0px" },
+      { rootMargin: "-45% 0px -50% 0px" },
     );
     refs.current.forEach((el) => el && io.observe(el));
     return () => io.disconnect();
   }, []);
 
   return (
-    <Segment
-      id="security"
-      title="Што се случува со вашата стока"
-      intro="Следете една нарачка низ магацинот. Секој чекор остава запис што можете да го проверите."
-    >
-      <div className="grid grid-cols-[minmax(0,1fr)] items-start lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]" style={{ gap: "clamp(20px,3vw,56px)" }}>
-        <ol className="flex min-w-0 flex-col" style={{ margin: 0, padding: 0, listStyle: "none", borderTop: "1px solid rgba(20,20,26,.1)" }}>
+    <Segment id="security" label="Евиденција" title="Што се случува со вашата стока." lead="Следете една нарачка низ магацинот. Секој чекор остава запис што можете да го проверите.">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
+        <ol className="lg:border-r" style={{ margin: 0, padding: 0, listStyle: "none", borderColor: "rgba(20,20,26,.08)" }}>
           {STEPS.map((s, i) => {
             const on = i === active;
             return (
@@ -150,35 +107,18 @@ export default function SecurityTrail() {
                   refs.current[i] = el;
                 }}
                 data-i={i}
-                className="flex flex-col lg:min-h-[30vh] lg:justify-center"
-                style={{ gap: 18, padding: "clamp(22px,2.4vw,36px) 0", borderBottom: "1px solid rgba(20,20,26,.1)" }}
+                className="flex flex-col justify-center lg:min-h-[220px]"
+                style={{ gap: 20, padding: `40px ${PAD}`, borderBottom: i < STEPS.length - 1 ? rule() : undefined }}
               >
-                <div
-                  className="grid transition-opacity duration-500 lg:opacity-[var(--o)]"
-                  style={{ "--o": on ? 1 : 0.35, gridTemplateColumns: "40px minmax(0,1fr)", columnGap: 16, rowGap: 6 } as React.CSSProperties}
-                >
-                  <span
-                    className="font-numeric grid place-items-center"
-                    style={{
-                      gridRow: "span 2",
-                      width: 40,
-                      height: 40,
-                      borderRadius: 8,
-                      fontSize: 14,
-                      fontWeight: 600,
-                      background: on ? RED : "#f5f3f2",
-                      color: on ? "#ffffff" : "rgba(20,20,26,.6)",
-                      transition: `background-color 320ms ${EASE}, color 320ms ${EASE}`,
-                    }}
-                  >
+                <div className="flex flex-col transition-opacity duration-500 lg:opacity-[var(--o)]" style={{ gap: 10, "--o": on ? 1 : 0.4 } as React.CSSProperties}>
+                  <span className="font-numeric" style={{ fontSize: 12.5, fontWeight: 600, color: on ? RED : "#a1a1a8", transition: `color 300ms ${EASE}` }}>
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h3 style={{ margin: 0, fontSize: "clamp(20px,1.7vw,26px)", fontWeight: 600, lineHeight: 1.2, letterSpacing: "-.015em" }}>{s.title}</h3>
-                  <p style={{ margin: 0, maxWidth: "52ch", fontSize: "clamp(15px,1.1vw,17px)", lineHeight: 1.6, color: "rgba(20,20,26,.68)", textWrap: "pretty" }}>{s.body}</p>
+                  <h3 style={{ margin: 0, fontSize: "clamp(20px,1.7vw,24px)", fontWeight: 600, lineHeight: 1.2, letterSpacing: "-.015em" }}>{s.title}</h3>
+                  <p style={{ margin: 0, maxWidth: "50ch", fontSize: 15.5, lineHeight: 1.6, color: "rgba(20,20,26,.66)" }}>{s.body}</p>
                 </div>
-
                 {/* mobile: this step's photo + record, inline */}
-                <div className="relative overflow-hidden lg:hidden" style={{ minHeight: 300, borderRadius: 6, background: "#101014" }}>
+                <div className="relative overflow-hidden lg:hidden" style={{ minHeight: 300, background: "#101014" }}>
                   <Image src={s.img} alt={s.alt} fill sizes="100vw" className="object-cover" style={{ filter: "saturate(.75) brightness(.8)" }} />
                   <div className="absolute" style={{ left: 12, right: 12, bottom: 12 }}>{s.record}</div>
                 </div>
@@ -187,22 +127,23 @@ export default function SecurityTrail() {
           })}
         </ol>
 
-        {/* desktop: one pinned panel that follows the active step */}
-        <div className="sticky hidden overflow-hidden lg:block" style={{ top: 120, height: "min(72vh, 680px)", borderRadius: 6, background: "#101014" }}>
-          {STEPS.map((s, i) => (
-            <Image
-              key={s.img}
-              src={s.img}
-              alt={i === active ? s.alt : ""}
-              fill
-              sizes="(max-width: 1920px) 52vw, 1000px"
-              className="object-cover"
-              style={{ filter: "saturate(.75) brightness(.78)", opacity: i === active ? 1 : 0, transform: i === active ? "scale(1)" : "scale(1.04)", transition: `opacity 600ms ${EASE}, transform 900ms ${EASE}` }}
-            />
-          ))}
-          <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(10,10,14,0) 45%, rgba(10,10,14,.45) 100%)" }} />
-          <div key={active} className="absolute" style={{ left: 24, right: 24, bottom: 24, maxWidth: 440, animation: `efc-swap 480ms ${EASE}` }}>
-            {STEPS[active].record}
+        {/* desktop: one pinned photo that follows the active step */}
+        <div className="hidden lg:block" style={{ padding: PAD }}>
+          <div className="sticky overflow-hidden" style={{ top: 112, height: "min(72vh, 680px)", background: "#101014" }}>
+            {STEPS.map((s, i) => (
+              <Image
+                key={s.img + i}
+                src={s.img}
+                alt={i === active ? s.alt : ""}
+                fill
+                sizes="(max-width: 1440px) 52vw, 760px"
+                className="object-cover"
+                style={{ filter: "saturate(.75) brightness(.8)", opacity: i === active ? 1 : 0, transform: i === active ? "scale(1)" : "scale(1.04)", transition: `opacity 600ms ${EASE}, transform 900ms ${EASE}` }}
+              />
+            ))}
+            <div key={active} className="absolute" style={{ left: 24, right: 24, bottom: 24, maxWidth: 440, animation: `efc-swap 480ms ${EASE}` }}>
+              {STEPS[active].record}
+            </div>
           </div>
         </div>
       </div>
