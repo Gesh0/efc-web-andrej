@@ -3,32 +3,23 @@ import Image from "next/image";
 import Segment from "@/components/home/Segment";
 import MaterialIcon, { type MaterialName } from "@/components/MaterialIcon";
 import { delay } from "@/components/motion/Words";
-import { PAD, RED, rule } from "@/components/home/frame";
+import { Card, Pill, Row } from "@/components/home/records";
+import { LINE, PAD, RED, rule } from "@/components/home/frame";
 
-const LINE = rule();
+/* ------------------------------------------------------------------ visuals
+   Attio-style: a light stage that runs to the cell edges, holding one crisp UI record. */
 
-/* ------------------------------------------------------------ small visuals */
-
-function Panel({ children }: { children: ReactNode }) {
-  return <div style={{ background: "#f7f7f8", padding: 24, fontSize: 14 }}>{children}</div>;
-}
+const strike = (t: string) => <span style={{ textDecoration: "line-through", textDecorationColor: RED, color: "rgba(20,20,26,.5)" }}>{t}</span>;
 
 function NoUpfront() {
-  const rows = ["Закуп на магацин", "Полици и опрема", "Магацински персонал", "Фиксна месечна сума"];
   return (
-    <Panel>
-      {rows.map((r) => (
-        <div key={r} style={{ padding: "9px 0", borderBottom: LINE, color: "rgba(20,20,26,.55)", textDecoration: "line-through", textDecorationColor: RED }}>
-          {r}
-        </div>
-      ))}
-      <div className="flex items-baseline justify-between" style={{ paddingTop: 14 }}>
-        <span style={{ fontWeight: 600 }}>Почетен трошок</span>
-        <span className="font-numeric" style={{ fontSize: 36, fontWeight: 600, lineHeight: 1, color: RED }}>
-          0 <span style={{ fontSize: 16 }}>ден</span>
-        </span>
-      </div>
-    </Panel>
+    <Card title="Почетни трошоци">
+      <Row label={strike("Закуп на магацин")} value="—" />
+      <Row label={strike("Полици и опрема")} value="—" />
+      <Row label={strike("Магацински персонал")} value="—" />
+      <Row label={strike("Фиксна месечна сума")} value="—" />
+      <Row label={<b>Вкупно</b>} value={<b style={{ color: RED, fontSize: 18 }}>0 ден</b>} />
+    </Card>
   );
 }
 
@@ -38,119 +29,98 @@ const MONTHS = ["Ј", "Ф", "М", "А", "М", "Ј", "Ј", "А", "С", "О", "Н"
 
 function PayPerUse() {
   return (
-    <Panel>
-      <div className="flex items-end" style={{ gap: 6, height: 120 }} aria-hidden="true">
+    <Card title="Трошок по месец" meta="2026">
+      <div className="flex items-end" style={{ gap: 6, height: 132, padding: "16px 16px 0" }} aria-hidden="true">
         {LOAD.map((v, i) => (
-          <div key={i} className="flex flex-1 flex-col items-center" style={{ gap: 6, height: "100%", justifyContent: "flex-end" }}>
-            <span style={{ width: "100%", height: `${v}%`, background: i === 10 ? RED : "rgba(227,30,30,.35)" }} />
+          <div key={i} className="flex h-full flex-1 flex-col items-center justify-end" style={{ gap: 6 }}>
+            <span style={{ width: "100%", height: `${v}%`, background: i === 10 ? RED : "rgba(20,20,26,.14)" }} />
             <span style={{ fontSize: 10.5, color: "rgba(20,20,26,.45)" }}>{MONTHS[i]}</span>
           </div>
         ))}
       </div>
-      <div className="flex justify-between" style={{ marginTop: 12, fontSize: 13, color: "rgba(20,20,26,.6)" }}>
-        <span>Тивок месец: плаќате помалку</span>
-        <span>Сезона: повеќе</span>
-      </div>
-    </Panel>
+      <Row label="Тивок месец" value="плаќате помалку" />
+    </Card>
   );
 }
 
 function Scale() {
+  const rows: [string, string, number][] = [
+    ["Јануари", "120", 12],
+    ["Јуни", "480", 46],
+    ["Ноември", "1.040", 100],
+  ];
   return (
-    <Panel>
-      <div className="flex items-baseline justify-between" style={{ fontWeight: 600, fontSize: 15 }}>
-        <span>Првата нарачка</span>
-        <span style={{ color: RED }}>Сезонски врв</span>
-      </div>
-      <div className="relative" style={{ height: 8, marginTop: 12, background: "rgba(20,20,26,.08)" }}>
-        <span className="absolute inset-y-0 left-0" style={{ width: "100%", background: `linear-gradient(90deg, rgba(227,30,30,.25), ${RED})` }} />
-      </div>
-      <div style={{ marginTop: 12, fontSize: 13, color: "rgba(20,20,26,.6)" }}>Без минимум и без горна граница. Ист договор, без нов магацин.</div>
-    </Panel>
+    <Card title="Нарачки по месец" meta={<Pill>ист договор</Pill>}>
+      {rows.map(([m, n, pct]) => (
+        <div key={m} style={{ padding: "10px 16px", borderBottom: rule() }}>
+          <div className="flex justify-between" style={{ fontSize: 14, marginBottom: 8 }}>
+            <span>{m}</span>
+            <b className="font-numeric">{n}</b>
+          </div>
+          <div style={{ height: 4, background: "rgba(20,20,26,.06)" }}>
+            <span style={{ display: "block", width: `${pct}%`, height: "100%", background: pct === 100 ? RED : "rgba(20,20,26,.3)" }} />
+          </div>
+        </div>
+      ))}
+    </Card>
   );
 }
 
 function Custody() {
   return (
-    <Panel>
-      <div className="flex" style={{ gap: 4, height: 34 }}>
-        <span className="grid flex-4 place-items-center" style={{ background: RED, color: "#fff", fontWeight: 600, fontSize: 13 }}>
-          EFC одговара
-        </span>
-        <span className="grid flex-1 place-items-center" style={{ background: "rgba(20,20,26,.1)", fontWeight: 600, fontSize: 13 }}>
-          ELS
-        </span>
-      </div>
-      <div className="flex justify-between" style={{ marginTop: 10, fontSize: 12.5, color: "rgba(20,20,26,.55)" }}>
-        <span>Прием</span>
-        <span>Предавање на курир</span>
-      </div>
-    </Panel>
+    <Card title="Нарачка 20418" meta="одговорност">
+      <Row label="Примено во магацин" value={<Pill>EFC</Pill>} />
+      <Row label="Складирано · B-14" value={<Pill>EFC</Pill>} />
+      <Row label="Спакувано под камера" value={<Pill>EFC</Pill>} />
+      <Row label="Предадено на курир" value={<Pill tone="muted">ELS</Pill>} />
+    </Card>
   );
 }
 
 function StockTable() {
-  const rows: [string, number, number][] = [
-    ["Парфем 50 ml", 186, 78],
-    ["Парфем 100 ml", 97, 42],
-    ["Сет за подарок", 14, 10],
-  ];
   return (
-    <Panel>
-      {rows.map(([name, qty, pct]) => (
-        <div key={name} className="flex items-center justify-between" style={{ gap: 12, padding: "8px 0", borderBottom: LINE }}>
-          <span>{name}</span>
-          <span className="flex items-center" style={{ gap: 10 }}>
-            <span style={{ width: 80, height: 6, background: "rgba(20,20,26,.08)", overflow: "hidden" }}>
-              <span style={{ display: "block", width: `${pct}%`, height: "100%", background: pct < 15 ? RED : "#14141a" }} />
-            </span>
-            <span className="font-numeric" style={{ minWidth: 28, textAlign: "right" }}>{qty}</span>
-          </span>
-        </div>
-      ))}
-    </Panel>
+    <Card title="Залиха" meta="пред 2 мин">
+      <Row label="Парфем 50 ml" value={<b>186</b>} />
+      <Row label="Парфем 100 ml" value={<b>97</b>} />
+      <Row label="Сет за подарок" value={<Pill tone="warn">14 · ниско</Pill>} />
+    </Card>
   );
 }
 
-/** What moves off the client's desk, and what stays on it. */
 function HandOff() {
-  const ours = ["Пакување", "Курири", "Залиха", "Враќања"];
-  const yours = ["Продажба", "Маркетинг", "Купувачи"];
-  const col = (title: string, items: string[], on: boolean) => (
-    <div className="flex min-w-0 flex-1 flex-col" style={{ gap: 8 }}>
-      <span style={{ fontSize: 12.5, fontWeight: 600, color: "rgba(20,20,26,.55)" }}>{title}</span>
-      {items.map((t) => (
-        <span
-          key={t}
-          style={{ padding: "8px 12px", fontSize: 14, background: on ? RED : "#ffffff", color: on ? "#ffffff" : "#14141a", border: on ? "none" : LINE }}
-        >
-          {t}
-        </span>
-      ))}
-    </div>
-  );
   return (
-    <Panel>
-      <div className="flex items-start" style={{ gap: 12 }}>
-        {col("Преминува кај EFC", ours, false)}
-        <span aria-hidden="true" style={{ alignSelf: "center", fontSize: 20, color: "rgba(20,20,26,.35)" }}>→</span>
-        {col("Ви останува вам", yours, true)}
-      </div>
-    </Panel>
+    <Card title="Кој што прави">
+      <Row label="Пакување и фискализација" value={<Pill tone="muted">EFC</Pill>} />
+      <Row label="Залиха и враќања" value={<Pill tone="muted">EFC</Pill>} />
+      <Row label="Достава" value={<Pill tone="muted">ELS</Pill>} />
+      <Row label={<b>Продажба и маркетинг</b>} value={<Pill tone="warn">Вие</Pill>} />
+    </Card>
+  );
+}
+
+/** Light stage behind a record: a faint dot grid, the record centred in it. */
+function Stage({ children }: { children: ReactNode }) {
+  return (
+    <div
+      className="grid h-full place-items-center"
+      style={{ padding: PAD, background: "#f7f7f8", backgroundImage: "radial-gradient(rgba(20,20,26,.09) 1px, transparent 1px)", backgroundSize: "16px 16px" }}
+    >
+      <div style={{ width: "min(100%, 420px)" }}>{children}</div>
+    </div>
   );
 }
 
 function Photo({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="relative overflow-hidden" style={{ minHeight: 200, height: "100%", background: "#101014" }}>
-      <Image src={src} alt={alt} fill sizes="(max-width: 1100px) 100vw, 900px" className="object-cover" style={{ filter: "saturate(.8)" }} />
+    <div className="relative h-full overflow-hidden" style={{ minHeight: 280, background: "#101014" }}>
+      <Image src={src} alt={alt} fill sizes="(max-width: 1024px) 100vw, 720px" className="object-cover" style={{ filter: "saturate(.85)" }} />
     </div>
   );
 }
 
-/* -------------------------------------------------------------- benefits */
+/* ----------------------------------------------------------------- benefits */
 
-type Benefit = { icon: MaterialName; title: string; body: string; visual: ReactNode; full?: boolean };
+type Benefit = { icon: MaterialName; title: string; body: string; visual: ReactNode; photo?: boolean; full?: boolean };
 
 // row pattern: full · half half · half half · full · half half
 const BENEFITS: Benefit[] = [
@@ -158,48 +128,49 @@ const BENEFITS: Benefit[] = [
   { icon: "payments", title: "Плаќате колку што користите", body: "Нема фиксен месечен трошок. Во тивок месец плаќате помалку, во сезона повеќе.", visual: <PayPerUse /> },
   { icon: "trending_up", title: "Расте со вас", body: "Без минимум и без горна граница на нарачки. Истиот договор додека растете, а сезоната ја покриваме ние.", visual: <Scale /> },
   { icon: "verified_user", title: "Одговорноста е наша", body: "Од приемот до предавањето на курирот, ние одговараме за стоката.", visual: <Custody /> },
-  { icon: "groups", title: "Нема кадар за водење", body: "Ние вработуваме, обучуваме и организираме смени. Вие не водите магацински тим.", visual: <Photo src="/assets/efc-pick-pack.jpg" alt="Тимот на EFC пакува нарачки" /> },
-  { full: true, icon: "handshake", title: "Еден партнер за магацин и достава", body: "Спакуваните нарачки одат директно кај ELS. Нема чекање меѓу магацинот и курирот и нема дополнителен посредник.", visual: <Photo src="/assets/efc-van-dock.avif" alt="Пратки се товарат во возило за достава" /> },
+  { icon: "groups", title: "Нема кадар за водење", body: "Ние вработуваме, обучуваме и организираме смени. Вие не водите магацински тим.", photo: true, visual: <Photo src="/assets/efc-pick-pack.jpg" alt="Тимот на EFC пакува нарачки" /> },
+  { full: true, icon: "handshake", title: "Еден партнер за магацин и достава", body: "Спакуваните нарачки одат директно кај ELS. Нема чекање меѓу магацинот и курирот и нема дополнителен посредник.", photo: true, visual: <Photo src="/assets/efc-van-dock.avif" alt="Пратки се товарат во возило за достава" /> },
   { icon: "visibility", title: "Увид во секој момент", body: "Залиха и статус на нарачките на веб, без да нè прашувате.", visual: <StockTable /> },
   { icon: "storefront", title: "Вие се фокусирате на продажбата", body: "Времето што одеше на пакување и курири сега оди на продавање.", visual: <HandOff /> },
 ];
 
-/** Bordered grid rail to rail: rows of one full-width cell or two equal cells, each claim paired with its proof. */
+/**
+ * Bordered grid rail to rail. Each cell: the claim on top, its proof below on a stage that
+ * runs to the cell edges (full-width rows put the stage on the right half instead).
+ */
 export default function Benefits() {
   return (
-    <Segment id="why" label="Зошто EFC" title="Што добивате кога логистиката е кај нас." lead="Сè што повеќе не плаќате, не водите и не ве загрижува.">
+    <Segment id="why" title="Што добивате кога логистиката е кај нас." lead="Сè што повеќе не плаќате, не водите и не ве загрижува.">
       <div data-reveal className="grid grid-cols-1 lg:grid-cols-2">
         {BENEFITS.map((b, i) => {
           // a half cell is the left of its pair when an even number of half cells precede it
           const halvesBefore = BENEFITS.slice(0, i).filter((x) => !x.full).length;
           const left = !b.full && halvesBefore % 2 === 0;
           const lastRow = i >= BENEFITS.length - (BENEFITS[BENEFITS.length - 1].full ? 1 : 2);
-          const head = (
-            <div className="flex flex-col" style={{ gap: 14 }}>
-              <span className="grid place-items-center" style={{ width: 40, height: 40, background: "#fdeceb", color: RED }}>
-                <MaterialIcon name={b.icon} size={22} />
-              </span>
-              <h3 className="efc-display" style={{ fontSize: "clamp(20px,1.7vw,26px)", lineHeight: 1.15, color: "#101014" }}>
-                {b.title}
-              </h3>
-              <p style={{ margin: 0, maxWidth: "48ch", fontSize: 15.5, lineHeight: 1.6, color: "rgba(20,20,26,.66)", textWrap: "pretty" }}>{b.body}</p>
-            </div>
-          );
+          const visual = b.photo ? b.visual : <Stage>{b.visual}</Stage>;
           return (
             <article
               key={b.title}
               className={[
-                "efc-rise flex min-w-0 flex-col border-[rgba(20,20,26,.08)]",
+                "efc-rise grid min-w-0 border-[rgba(20,20,26,.08)]",
                 i < BENEFITS.length - 1 ? "border-b" : "",
                 lastRow ? "lg:border-b-0" : "",
                 left ? "lg:border-r" : "",
-                b.full ? "lg:col-span-2 lg:grid lg:grid-cols-2 lg:items-center" : "",
+                b.full ? "lg:col-span-2 lg:grid-cols-2" : "grid-rows-[auto_1fr]",
               ].join(" ")}
-              style={{ ...delay((i % 2) * 90), gap: PAD, padding: PAD, minHeight: b.full ? undefined : 380 }}
+              style={delay((i % 2) * 90)}
             >
-              {head}
-              <div className={b.full ? "" : "mt-auto"} style={{ minHeight: b.full ? 240 : undefined }}>
-                {b.visual}
+              <div className="flex flex-col" style={{ gap: 14, padding: PAD }}>
+                <span style={{ color: RED, display: "inline-flex" }}>
+                  <MaterialIcon name={b.icon} size={26} />
+                </span>
+                <h3 className="efc-display" style={{ fontSize: "clamp(20px,1.7vw,26px)", lineHeight: 1.15, color: "#101014" }}>
+                  {b.title}
+                </h3>
+                <p style={{ margin: 0, maxWidth: "48ch", fontSize: 15.5, lineHeight: 1.6, color: "rgba(20,20,26,.66)", textWrap: "pretty" }}>{b.body}</p>
+              </div>
+              <div className={b.full ? "max-lg:border-t lg:border-l" : "border-t"} style={{ borderColor: LINE, minHeight: b.full ? 320 : 300 }}>
+                {visual}
               </div>
             </article>
           );

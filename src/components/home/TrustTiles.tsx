@@ -18,20 +18,20 @@ export default function TrustTiles() {
           {TILES.map((t, i) => (
             <article
               key={t.num}
-              className={`efc-rise flex min-w-0 flex-col ${i % 2 ? "md:border-l" : ""} ${i > 0 ? "max-md:border-t" : ""} ${i > 1 ? "md:border-t" : ""}`}
+              className={`efc-rise flex min-w-0 flex-col ${i > 0 ? "max-md:border-t" : ""} ${i > 1 ? "md:border-t" : ""}`}
               style={{ ...delay((i % 2) * 90), borderColor: LINE }}
             >
-              <div className="group relative overflow-hidden" style={{ aspectRatio: "16 / 9", background: "#101014" }}>
+              <div className="relative overflow-hidden" style={{ aspectRatio: "16 / 9", background: "#101014" }}>
                 <Image
                   src={t.img}
                   alt={t.alt}
                   fill
                   sizes="(max-width: 768px) 100vw, 680px"
-                  className="object-cover transition-transform duration-700 ease-(--ease-efc) group-hover:scale-[1.03]"
+                  className="object-cover"
                   style={{ filter: "saturate(.85)" }}
                 />
               </div>
-              <div className="grid items-baseline" style={{ gridTemplateColumns: "auto minmax(0,1fr)", columnGap: 24, rowGap: 6, padding: `28px ${PAD} 32px`, borderTop: rule() }}>
+              <div className={`grid flex-1 items-baseline ${i % 2 ? "md:border-l" : ""}`} style={{ gridTemplateColumns: "auto minmax(0,1fr)", columnGap: 24, rowGap: 6, padding: `28px ${PAD} 32px`, borderTop: rule(), borderColor: LINE }}>
                 <span className="font-numeric" style={{ gridRow: "span 2", fontSize: "clamp(36px,3.4vw,56px)", fontWeight: 600, letterSpacing: "-.04em", lineHeight: 1 }}>
                   {t.num}
                 </span>

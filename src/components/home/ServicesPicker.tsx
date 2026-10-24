@@ -142,12 +142,28 @@ export default function ServicesPicker() {
   const uses = SERVICES[active].uses;
 
   useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && setActive(Number((e.target as HTMLElement).dataset.i))),
-      { rootMargin: "-40% 0px -55% 0px" },
-    );
-    refs.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
+    // active = the last block whose top has passed the reading line (45% down); the first one before that
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      const line = window.innerHeight * 0.45;
+      let idx = 0;
+      refs.current.forEach((el, i) => {
+        if (el && el.getBoundingClientRect().top <= line) idx = i;
+      });
+      setActive(idx);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   const go = (i: number) => refs.current[i]?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -155,14 +171,13 @@ export default function ServicesPicker() {
   return (
     <Segment
       id="solutions"
-      label="Услуги"
       title="Цел логистички центар зад вашата продавница."
       lead="Простор, рампа, тим, опрема и систем за евиденција. Од нив ги составуваме услугите што ви требаат, и оние што не се на листата."
     >
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,3fr)_minmax(0,9fr)]">
         {/* index */}
         <nav aria-label="Услуги" className="hidden lg:block" style={{ borderRight: rule(), padding: `${PAD} 24px ${PAD} ${PAD}` }}>
-          <ul className="sticky flex flex-col" style={{ top: 112, gap: 4, margin: 0, padding: 0, listStyle: "none" }}>
+          <ul className="sticky flex flex-col" style={{ top: "calc(var(--nav-h, 64px) + 48px)", transition: "top 360ms cubic-bezier(.23,1,.32,1)", gap: 4, margin: 0, padding: 0, listStyle: "none" }}>
             {SERVICES.map((s, i) => {
               const on = i === active;
               return (
@@ -192,7 +207,7 @@ export default function ServicesPicker() {
 
         <div className="min-w-0">
           {/* process strip: stays in view and follows the active service */}
-          <div className="sticky" style={{ top: 80, zIndex: 4, background: "rgba(255,255,255,.96)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", borderBottom: rule(), padding: `20px ${PAD}` }}>
+          <div className="sticky" style={{ top: "var(--nav-h, 64px)", transition: "top 360ms cubic-bezier(.23,1,.32,1)", zIndex: 4, background: "rgba(255,255,255,.96)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", borderBottom: rule(), padding: `20px ${PAD}` }}>
             <div className="flex items-baseline justify-between" style={{ gap: 12, marginBottom: 16, fontSize: 13, color: "rgba(20,20,26,.6)" }}>
               <span>
                 Делови од центарот што ги користи: <b style={{ color: "#14141a" }}>{SERVICES[active].name}</b>

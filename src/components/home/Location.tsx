@@ -49,7 +49,7 @@ export default function Location() {
   const [hot, setHot] = useState<Mark | null>(null);
 
   return (
-    <Segment id="location" label="Локација" title="На влезот на Скопје." lead="Ферспед, 15 Корпус. Стоката стига до нас брзо и евтино, од било каде.">
+    <Segment id="location" title="На влезот на Скопје." lead="Ферспед, 15 Корпус. Стоката стига до нас брзо и евтино, од било каде.">
       <div className="relative flex flex-col lg:block" style={{ minHeight: 680 }}>
         {/* map */}
         <div className="relative overflow-hidden lg:absolute lg:inset-0" style={{ minHeight: 340, background: "#1b1b20" }}>

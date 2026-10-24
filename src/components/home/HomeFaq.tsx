@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { delay } from "@/components/motion/Words";
 import { ArrowUpRight } from "@/components/icons";
-import { Chip, EASE, Frame, GAP, PAD, RED, rule } from "@/components/home/frame";
+import { EASE, Frame, PAD, RED, rule } from "@/components/home/frame";
 
 const FAQ = [
   {
@@ -21,14 +21,11 @@ export default function HomeFaq() {
   const [open, setOpen] = useState(0);
 
   return (
-    <section id="faq" className="relative" style={{ paddingTop: GAP }}>
+    <section id="faq" className="relative">
       <Frame>
-        <div style={{ borderTop: rule() }}>
-          <div data-reveal className="grid grid-cols-1 items-end lg:grid-cols-12" style={{ gap: 32, padding: `${PAD} ${PAD} calc(${PAD} * 1.5)` }}>
-            <div className="flex flex-col lg:col-span-7" style={{ gap: 20 }}>
-              <span className="efc-rise">
-                <Chip>Прашања</Chip>
-              </span>
+        <div>
+          <div data-reveal className="grid grid-cols-1 items-end lg:grid-cols-12" style={{ gap: 32, padding: `calc(${PAD} * 2) ${PAD} calc(${PAD} * 1.5)` }}>
+            <div className="flex flex-col lg:col-span-7">
               <h2 className="efc-display efc-rise" style={{ ...delay(80), fontSize: "clamp(28px,3vw,44px)", lineHeight: 1.12, color: "#101014" }}>
                 Имате прашања? <span style={{ color: "#a1a1a8" }}>Тука сме да ви помогнеме.</span>
               </h2>

@@ -6,7 +6,6 @@ import SecurityTrail from "@/components/home/SecurityTrail";
 import ElsDelivery from "@/components/home/ElsDelivery";
 import Benefits from "@/components/home/Benefits";
 import HomeFaq from "@/components/home/HomeFaq";
-import HomeCta from "@/components/home/HomeCta";
 import { Rails } from "@/components/home/frame";
 import SmoothScroll from "@/components/motion/SmoothScroll";
 
@@ -23,7 +22,6 @@ export default function HomePage() {
       <ElsDelivery />
       <Benefits />
       <HomeFaq />
-      <HomeCta />
     </div>
   );
 }

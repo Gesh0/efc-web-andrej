@@ -6,6 +6,7 @@ import MaterialIcon from "@/components/MaterialIcon";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/Logo";
 import useMagnetic from "@/components/motion/useMagnetic";
+import { FRAME_MAX, GUTTER } from "@/components/home/frame";
 
 const LOGIN_URL = "https://efc.wms.pro/login";
 
@@ -17,7 +18,8 @@ const LINKS = [
 ];
 
 /**
- * Floating pill nav. Light on the home and about pages, dark on contact, and
+ * Home: a square full-width bar aligned to the page frame that hides on scroll down.
+ * Elsewhere a floating pill nav: light on the about page, dark on contact, and
  * on /services it rides dark over the hero video, then turns into the light
  * pill once the white page is behind it.
  */
@@ -26,7 +28,36 @@ export default function Navbar() {
   const isHome = pathname === "/";
   const [overHero, setOverHero] = useState(pathname === "/services");
   const contactRef = useRef<HTMLAnchorElement>(null);
+  const [hidden, setHidden] = useState(false);
   useMagnetic(contactRef);
+
+  // home: hide while scrolling down, return on scroll up; sticky page parts read --nav-h
+  useEffect(() => {
+    if (!isHome) return;
+    const root = document.documentElement;
+    let last = window.scrollY;
+    let raf = 0;
+    const tick = () => {
+      raf = 0;
+      const y = window.scrollY;
+      const hide = y > 120 && y > last;
+      if (Math.abs(y - last) > 4) {
+        setHidden(hide);
+        root.style.setProperty("--nav-h", hide ? "0px" : "64px");
+        last = y;
+      }
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    root.style.setProperty("--nav-h", "64px");
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      root.style.removeProperty("--nav-h");
+    };
+  }, [isHome]);
 
   useEffect(() => {
     if (pathname !== "/services") return;
@@ -56,15 +87,20 @@ export default function Navbar() {
   const ink = dark ? "#ffffff" : "#1f1f1f";
   const shell: CSSProperties = isHome
     ? {
-        top: "clamp(8px,1.6vw,14px)",
-        left: "clamp(8px,2.5vw,24px)",
-        right: "clamp(8px,2.5vw,24px)",
-        padding: "10px 10px 10px clamp(14px,2vw,20px)",
-        borderRadius: 15,
-        border: "1px solid rgba(20,20,26,0.1)",
-        background: "rgba(255,255,255,0.62)",
-        backdropFilter: "blur(18px) saturate(140%)",
-        WebkitBackdropFilter: "blur(18px) saturate(140%)",
+        // square bar on the home frame: content edges sit on the page rails
+        top: 0,
+        left: 0,
+        right: 0,
+        maxWidth: "none",
+        height: 64,
+        padding: `0 max(${GUTTER}, calc((100vw - ${FRAME_MAX}px) / 2 + ${GUTTER}))`,
+        borderBottom: "1px solid rgba(20,20,26,.08)",
+        background: "rgba(255,255,255,.92)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        flexWrap: "nowrap",
+        transform: hidden ? "translateY(-100%)" : "none",
+        transition: "transform 360ms cubic-bezier(.23,1,.32,1)",
       }
     : {
         top: 14,
@@ -94,8 +130,7 @@ export default function Navbar() {
         alignItems: "center",
         justifyContent: "space-between",
         gap: "12px 20px",
-        transition:
-          "background-color 320ms cubic-bezier(.23,1,.32,1), border-color 320ms cubic-bezier(.23,1,.32,1)",
+        transition: "background-color 320ms cubic-bezier(.23,1,.32,1), border-color 320ms cubic-bezier(.23,1,.32,1)",
         ...shell,
       }}
     >
@@ -156,7 +191,7 @@ export default function Navbar() {
           className="efc-press inline-flex items-center whitespace-nowrap px-5 hover:border-brand! hover:text-brand! max-sm:px-[9px]"
           style={{
             height: 40,
-            borderRadius: 9999,
+            borderRadius: isHome ? 0 : 9999,
             border: `1px solid ${dark ? "rgba(255,255,255,.34)" : "rgba(20,20,26,.22)"}`,
             color: dark ? "#ffffff" : "#14141a",
             fontSize: 13.5,
@@ -179,7 +214,7 @@ export default function Navbar() {
           style={{
             height: 40,
             padding: "0 22px",
-            borderRadius: 9999,
+            borderRadius: isHome ? 0 : 9999,
             background: "#dc2626",
             fontSize: 13.5,
             fontWeight: 600,

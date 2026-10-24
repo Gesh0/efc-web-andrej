@@ -161,8 +161,8 @@ export default function HomeHero() {
             </span>
           </h1>
 
-          <div data-hero="stage" className="relative order-1 grid self-start place-items-center lg:order-2" style={{ zIndex: 2, pointerEvents: "none" }}>
-            <div data-hero="lift" className="grid w-full place-items-center" style={{ willChange: "transform" }}>
+          <div data-hero="stage" className="relative order-1 grid self-start justify-items-end lg:order-2" style={{ zIndex: 2, pointerEvents: "none" }}>
+            <div data-hero="lift" className="grid w-full justify-items-end" style={{ willChange: "transform" }}>
               <Image
                 data-hero="container"
                 src="/assets/efc-container-hero.png"
@@ -172,7 +172,7 @@ export default function HomeHero() {
                 preload
                 sizes="(max-width: 1024px) 90vw, 640px"
                 className="efc-pre"
-                style={{ width: "100%", maxWidth: 640, height: "auto", transformOrigin: "50% 55%", filter: CONTAINER_SHADOW, pointerEvents: "auto" }}
+                style={{ width: "min(100%, 680px)", height: "auto", transformOrigin: "50% 55%", filter: CONTAINER_SHADOW, pointerEvents: "auto" }}
               />
             </div>
           </div>

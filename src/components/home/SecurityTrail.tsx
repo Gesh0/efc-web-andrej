@@ -86,16 +86,32 @@ export default function SecurityTrail() {
   const refs = useRef<(HTMLLIElement | null)[]>([]);
 
   useEffect(() => {
-    const io = new IntersectionObserver(
-      (entries) => entries.forEach((e) => e.isIntersecting && setActive(Number((e.target as HTMLElement).dataset.i))),
-      { rootMargin: "-45% 0px -50% 0px" },
-    );
-    refs.current.forEach((el) => el && io.observe(el));
-    return () => io.disconnect();
+    // active = the last block whose top has passed the reading line (45% down); the first one before that
+    let raf = 0;
+    const measure = () => {
+      raf = 0;
+      const line = window.innerHeight * 0.45;
+      let idx = 0;
+      refs.current.forEach((el, i) => {
+        if (el && el.getBoundingClientRect().top <= line) idx = i;
+      });
+      setActive(idx);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(measure);
+    };
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
   return (
-    <Segment id="security" label="Евиденција" title="Што се случува со вашата стока." lead="Следете една нарачка низ магацинот. Секој чекор остава запис што можете да го проверите.">
+    <Segment id="security" title="Што се случува со вашата стока." lead="Следете една нарачка низ магацинот. Секој чекор остава запис што можете да го проверите.">
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
         <ol className="lg:border-r" style={{ margin: 0, padding: 0, listStyle: "none", borderColor: "rgba(20,20,26,.08)" }}>
           {STEPS.map((s, i) => {
@@ -129,7 +145,7 @@ export default function SecurityTrail() {
 
         {/* desktop: one pinned photo that follows the active step */}
         <div className="hidden lg:block" style={{ padding: PAD }}>
-          <div className="sticky overflow-hidden" style={{ top: 112, height: "min(72vh, 680px)", background: "#101014" }}>
+          <div className="sticky overflow-hidden" style={{ top: "calc(var(--nav-h, 64px) + 48px)", transition: "top 360ms cubic-bezier(.23,1,.32,1)", height: "min(72vh, 680px)", background: "#101014" }}>
             {STEPS.map((s, i) => (
               <Image
                 key={s.img + i}
