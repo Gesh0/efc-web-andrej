@@ -50,7 +50,7 @@ type Step = { title: string; body: string; img: string; alt: string; record: Rea
 const STEPS: Step[] = [
   {
     title: "Прием",
-    body: "Ја броиме и проверуваме стоката пред да влезе во залиха. Ако нешто не се совпаѓа со испратницата, ве известуваме.",
+    body: "Ја броиме и проверуваме стоката пред да влезе во залиха. Ако нешто не се совпаѓа со испратницата, тоа веднаш го гледате на нашата платформа.",
     img: "/assets/services-details.webp",
     alt: "Камиони на рампите за прием",
     record: (
@@ -83,7 +83,6 @@ const STEPS: Step[] = [
       <Card icon="videocam" title="Станица 03" meta="14:32:07">
         <Row label={<span className="inline-flex items-center" style={{ gap: 8 }}><span className="efc-rec" />Снимање</span>} value="Нарачка 20418" />
         <Row label="Артикли во пакетот" value="2 / 2 ✓" />
-        <Row label="Снимката се чува" value="[?] дена" />
       </Card>
     ),
   },

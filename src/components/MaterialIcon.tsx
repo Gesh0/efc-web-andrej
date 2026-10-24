@@ -14,6 +14,7 @@ const ICONS = [
   "inventory_2",
   "local_shipping",
   "location_on",
+  "login",
   "move_to_inbox",
   "package_2",
   "password",

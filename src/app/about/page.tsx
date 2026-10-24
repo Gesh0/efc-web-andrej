@@ -288,7 +288,7 @@ export default function AboutPage() {
               className="efc-btn-red inline-flex items-center text-white"
               style={{ gap: 10, height: 52, padding: "0 28px", borderRadius: 9999, background: "#dc2626", fontSize: 15, fontWeight: 600 }}
             >
-              Контактирај нè
+              Започнете разговор
               <ArrowUpRight size={15} />
             </Link>
           </div>

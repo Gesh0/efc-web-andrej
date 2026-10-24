@@ -15,7 +15,7 @@ export default function CtaBand({
   title,
   body,
   href,
-  label = "Контактирајте нè",
+  label = "Започнете разговор",
   steps,
   wide = false,
 }: {

@@ -325,7 +325,7 @@ export default function ProcessList() {
                           </ul>
                         )}
                         <Link href="/contact" className="efc-pill" tabIndex={isOpen ? 0 : -1}>
-                          Контактирај нè
+                          Започнете разговор
                           <ArrowUpRight />
                         </Link>
                       </div>

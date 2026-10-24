@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
+import MaterialIcon from "@/components/MaterialIcon";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/Logo";
 import useMagnetic from "@/components/motion/useMagnetic";
@@ -151,10 +152,10 @@ export default function Navbar() {
           href={LOGIN_URL}
           target="_blank"
           rel="noopener"
-          className="efc-press inline-flex items-center whitespace-nowrap hover:border-brand! hover:text-brand!"
+          aria-label="Логирај се"
+          className="efc-press inline-flex items-center whitespace-nowrap px-5 hover:border-brand! hover:text-brand! max-sm:px-[9px]"
           style={{
             height: 40,
-            padding: "0 20px",
             borderRadius: 9999,
             border: `1px solid ${dark ? "rgba(255,255,255,.34)" : "rgba(20,20,26,.22)"}`,
             color: dark ? "#ffffff" : "#14141a",
@@ -164,7 +165,11 @@ export default function Navbar() {
               "transform 140ms cubic-bezier(.23,1,.32,1), border-color 240ms cubic-bezier(.23,1,.32,1), color 240ms cubic-bezier(.23,1,.32,1)",
           }}
         >
-          Логирај се
+          {/* phones: icon only, so the nav stays on one row next to the CTA */}
+          <span className="max-sm:hidden">Логирај се</span>
+          <span className="inline-flex sm:hidden">
+            <MaterialIcon name="login" size={20} />
+          </span>
         </a>
         <Link
           ref={contactRef}
@@ -180,7 +185,7 @@ export default function Navbar() {
             fontWeight: 600,
           }}
         >
-          Контакт
+          Започнете разговор
         </Link>
       </nav>
     </header>

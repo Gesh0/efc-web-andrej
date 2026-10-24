@@ -83,94 +83,94 @@ export default function Location() {
       title="На влезот на Скопје"
       intro="Локацијата е избрана за стоката да стигне до нас брзо и евтино, од било каде. Ферспед, 15 Корпус, Скопје."
     >
-        <div
-          data-reveal
-          className="efc-rise grid grid-cols-[minmax(0,1fr)] items-start lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]"
-          style={{ ...delay(260), gap: "clamp(16px,2vw,32px)" }}
-        >
-          {/* benefits */}
-          <ul className="order-2 flex min-w-0 flex-col lg:order-1" style={{ margin: 0, padding: 0, listStyle: "none", borderTop: "1px solid rgba(20,20,26,.1)" }}>
-            {BENEFITS.map((b) => {
-              const on = hot === b.mark;
-              return (
-                <li
-                  key={b.title}
-                  tabIndex={0}
-                  onPointerEnter={() => setHot(b.mark)}
-                  onPointerLeave={() => setHot(null)}
-                  onFocus={() => setHot(b.mark)}
-                  onBlur={() => setHot(null)}
-                  className="grid cursor-default outline-none focus-visible:ring-2 focus-visible:ring-brand"
-                  style={{ gridTemplateColumns: "44px minmax(0,1fr)", columnGap: 16, rowGap: 4, padding: "clamp(16px,1.6vw,22px) 0", borderBottom: "1px solid rgba(20,20,26,.1)" }}
+      <div
+        data-reveal
+        className="efc-rise grid grid-cols-[minmax(0,1fr)] items-start lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]"
+        style={{ ...delay(260), gap: "clamp(16px,2vw,32px)" }}
+      >
+        {/* benefits */}
+        <ul className="order-2 flex min-w-0 flex-col lg:order-1" style={{ margin: 0, padding: 0, listStyle: "none", borderTop: "1px solid rgba(20,20,26,.1)" }}>
+          {BENEFITS.map((b) => {
+            const on = hot === b.mark;
+            return (
+              <li
+                key={b.title}
+                tabIndex={0}
+                onPointerEnter={() => setHot(b.mark)}
+                onPointerLeave={() => setHot(null)}
+                onFocus={() => setHot(b.mark)}
+                onBlur={() => setHot(null)}
+                className="grid cursor-default outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                style={{ gridTemplateColumns: "44px minmax(0,1fr)", columnGap: 16, rowGap: 4, padding: "clamp(16px,1.6vw,22px) 0", borderBottom: "1px solid rgba(20,20,26,.1)" }}
+              >
+                <span
+                  className="grid place-items-center"
+                  style={{
+                    gridRow: "span 2",
+                    width: 44,
+                    height: 44,
+                    borderRadius: 8,
+                    border: `1px solid ${on ? RED : "rgba(20,20,26,.14)"}`,
+                    background: on ? RED : "#ffffff",
+                    color: on ? "#ffffff" : "#14141a",
+                    transition: `background-color 260ms ${EASE}, color 260ms ${EASE}, border-color 260ms ${EASE}`,
+                  }}
                 >
-                  <span
-                    className="grid place-items-center"
-                    style={{
-                      gridRow: "span 2",
-                      width: 44,
-                      height: 44,
-                      borderRadius: 8,
-                      border: `1px solid ${on ? RED : "rgba(20,20,26,.14)"}`,
-                      background: on ? RED : "#ffffff",
-                      color: on ? "#ffffff" : "#14141a",
-                      transition: `background-color 260ms ${EASE}, color 260ms ${EASE}, border-color 260ms ${EASE}`,
-                    }}
-                  >
-                    <MaterialIcon name={b.icon} size={22} />
-                  </span>
-                  <h3 style={{ margin: 0, fontSize: "clamp(17px,1.3vw,20px)", fontWeight: 600, lineHeight: 1.3, letterSpacing: "-.01em" }}>{b.title}</h3>
-                  <p style={{ margin: 0, maxWidth: "56ch", fontSize: "clamp(14.5px,1.05vw,16px)", lineHeight: 1.55, color: "rgba(20,20,26,.68)", textWrap: "pretty" }}>{b.body}</p>
-                </li>
-              );
-            })}
-          </ul>
+                  <MaterialIcon name={b.icon} size={22} />
+                </span>
+                <h3 style={{ margin: 0, fontSize: "clamp(17px,1.3vw,20px)", fontWeight: 600, lineHeight: 1.3, letterSpacing: "-.01em" }}>{b.title}</h3>
+                <p style={{ margin: 0, maxWidth: "56ch", fontSize: "clamp(14.5px,1.05vw,16px)", lineHeight: 1.55, color: "rgba(20,20,26,.68)", textWrap: "pretty" }}>{b.body}</p>
+              </li>
+            );
+          })}
+        </ul>
 
-          {/* map */}
-          <div
-            className="relative order-1 overflow-hidden lg:sticky lg:order-2"
-            style={{ top: 120, minHeight: "clamp(320px,38vw,560px)", height: "100%", borderRadius: 6, background: "#1b1b20" }}
-          >
-            <iframe
-              title="Локација на EFC на Google Maps"
-              src={MAP_EMBED}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              className="absolute inset-0 h-full w-full"
-              style={{ border: 0, pointerEvents: "none", filter: "saturate(.85)" }}
-            />
-            <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse at center, rgba(10,10,14,0) 40%, rgba(10,10,14,.35) 100%)" }} />
+        {/* map */}
+        <div
+          className="relative order-1 overflow-hidden lg:sticky lg:order-2"
+          style={{ top: 120, minHeight: "clamp(320px,38vw,560px)", height: "100%", borderRadius: 6, background: "#1b1b20" }}
+        >
+          <iframe
+            title="Локација на EFC на Google Maps"
+            src={MAP_EMBED}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            className="absolute inset-0 h-full w-full"
+            style={{ border: 0, pointerEvents: "none", filter: "saturate(.85)" }}
+          />
+          <span aria-hidden="true" className="pointer-events-none absolute inset-0" style={{ background: "radial-gradient(ellipse at center, rgba(10,10,14,0) 40%, rgba(10,10,14,.35) 100%)" }} />
 
-            <div aria-hidden="true" className="pointer-events-none absolute inset-0">
-              {/* Google's own marker sits at the exact centre; our label rides just above it */}
-              <Chip on={hot === "efc"} style={{ left: "50%", top: "50%", translate: "-50% calc(-100% - 46px)" }}>
-                <span style={{ width: 8, height: 8, borderRadius: "50%", background: hot === "efc" ? "#fff" : RED }} />
-                EFC
-              </Chip>
-              <Chip on={hot === "customs"} style={{ left: "50%", top: "50%", translate: "24px 18px" }}>
-                <MaterialIcon name="fact_check" size={16} />
-                Царински склад до нас
-              </Chip>
-              <Chip on={hot === "air"} style={{ right: 16, top: 16 }}>
-                <MaterialIcon name="flight" size={16} />
-                Аеродром Скопје →
-              </Chip>
-              <Chip on={hot === "city"} style={{ left: 16, bottom: 16 }}>
-                ← Центар на Скопје
-              </Chip>
-            </div>
-
-            <a
-              href={MAP_LINK}
-              target="_blank"
-              rel="noopener"
-              className="absolute inline-flex items-center"
-              style={{ right: 16, bottom: 16, gap: 6, padding: "8px 14px", borderRadius: 6, background: "#101014", color: "#fff", fontSize: 13, fontWeight: 500 }}
-            >
-              Отвори во Google Maps
-              <ArrowUpRight size={13} />
-            </a>
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+            {/* Google's own marker sits at the exact centre; our label rides just above it */}
+            <Chip on={hot === "efc"} style={{ left: "50%", top: "50%", translate: "-50% calc(-100% - 46px)" }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: hot === "efc" ? "#fff" : RED }} />
+              EFC
+            </Chip>
+            <Chip on={hot === "customs"} style={{ left: "50%", top: "50%", translate: "24px 18px" }}>
+              <MaterialIcon name="fact_check" size={16} />
+              Царински склад до нас
+            </Chip>
+            <Chip on={hot === "air"} style={{ right: 16, top: 16 }}>
+              <MaterialIcon name="flight" size={16} />
+              Аеродром Скопје →
+            </Chip>
+            <Chip on={hot === "city"} style={{ left: 16, bottom: 16 }}>
+              ← Центар на Скопје
+            </Chip>
           </div>
+
+          <a
+            href={MAP_LINK}
+            target="_blank"
+            rel="noopener"
+            className="absolute inline-flex items-center"
+            style={{ right: 16, bottom: 16, gap: 6, padding: "8px 14px", borderRadius: 6, background: "#101014", color: "#fff", fontSize: 13, fontWeight: 500 }}
+          >
+            Отвори во Google Maps
+            <ArrowUpRight size={13} />
+          </a>
         </div>
+      </div>
     </Segment>
   );
 }

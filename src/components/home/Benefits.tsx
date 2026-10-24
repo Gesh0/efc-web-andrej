@@ -58,15 +58,14 @@ function PayPerUse() {
 function Scale() {
   return (
     <Panel>
-      <div className="flex items-baseline justify-between font-numeric" style={{ fontWeight: 600 }}>
-        <span style={{ fontSize: 26 }}>100</span>
-        <span style={{ fontSize: 13, color: "rgba(20,20,26,.5)", fontFamily: "var(--font-sans)", fontWeight: 400 }}>нарачки</span>
-        <span style={{ fontSize: 26, color: RED }}>1.000</span>
+      <div className="flex items-baseline justify-between" style={{ fontWeight: 600, fontSize: 15 }}>
+        <span>Првата нарачка</span>
+        <span style={{ color: RED }}>Сезонски врв</span>
       </div>
       <div className="relative" style={{ height: 8, marginTop: 12, borderRadius: 99, background: "rgba(20,20,26,.08)" }}>
         <span className="absolute inset-y-0 left-0" style={{ width: "100%", borderRadius: 99, background: `linear-gradient(90deg, rgba(227,30,30,.25), ${RED})` }} />
       </div>
-      <div style={{ marginTop: 12, fontSize: 13, color: "rgba(20,20,26,.6)" }}>Ист договор, ист процес, без нов магацин.</div>
+      <div style={{ marginTop: 12, fontSize: 13, color: "rgba(20,20,26,.6)" }}>Без минимум и без горна граница. Ист договор, без нов магацин.</div>
     </Panel>
   );
 }
@@ -113,24 +112,30 @@ function StockTable() {
   );
 }
 
-function TimeBack() {
+/** What moves off the client's desk, and what stays on it. */
+function HandOff() {
+  const ours = ["Пакување", "Курири", "Залиха", "Враќања"];
+  const yours = ["Продажба", "Маркетинг", "Купувачи"];
+  const col = (title: string, items: string[], on: boolean) => (
+    <div className="flex min-w-0 flex-1 flex-col" style={{ gap: 8 }}>
+      <span style={{ fontSize: 12.5, fontWeight: 600, color: "rgba(20,20,26,.55)" }}>{title}</span>
+      {items.map((t) => (
+        <span
+          key={t}
+          style={{ padding: "8px 12px", borderRadius: 6, fontSize: 14, background: on ? RED : "#ffffff", color: on ? "#ffffff" : "#14141a", border: on ? "none" : LINE }}
+        >
+          {t}
+        </span>
+      ))}
+    </div>
+  );
   return (
     <Panel>
-      {[
-        ["Пакување и курири", 8, "rgba(20,20,26,.25)"],
-        ["Продажба и маркетинг", 92, RED],
-      ].map(([label, pct, c]) => (
-        <div key={label as string} style={{ padding: "6px 0" }}>
-          <div className="flex justify-between" style={{ fontSize: 13, marginBottom: 6 }}>
-            <span>{label}</span>
-            <span className="font-numeric">{pct}%</span>
-          </div>
-          <div style={{ height: 8, borderRadius: 99, background: "rgba(20,20,26,.06)" }}>
-            <span style={{ display: "block", width: `${pct}%`, height: "100%", borderRadius: 99, background: c as string }} />
-          </div>
-        </div>
-      ))}
-      <div style={{ marginTop: 8, fontSize: 12.5, color: "rgba(20,20,26,.5)" }}>Илустрација на вашето време во неделата</div>
+      <div className="flex items-start" style={{ gap: 12 }}>
+        {col("Преминува кај EFC", ours, false)}
+        <span aria-hidden="true" style={{ alignSelf: "center", fontSize: 20, color: "rgba(20,20,26,.35)" }}>→</span>
+        {col("Ви останува вам", yours, true)}
+      </div>
     </Panel>
   );
 }
@@ -151,12 +156,12 @@ type Benefit = { icon: MaterialName; title: string; body: string; visual: ReactN
 const BENEFITS: Benefit[] = [
   { full: true, icon: "savings", title: "Нула трошоци однапред", body: "Без закуп на магацин, полици, опрема или вработување. Почнувате со стоката што веќе ја имате.", visual: <NoUpfront /> },
   { icon: "payments", title: "Плаќате колку што користите", body: "Нема фиксен месечен трошок. Во тивок месец плаќате помалку, во сезона повеќе.", visual: <PayPerUse /> },
-  { icon: "trending_up", title: "Расте со вас", body: "Од 100 до 1.000 нарачки со истиот договор. Сезоната ја покриваме ние.", visual: <Scale /> },
+  { icon: "trending_up", title: "Расте со вас", body: "Без минимум и без горна граница на нарачки. Истиот договор додека растете, а сезоната ја покриваме ние.", visual: <Scale /> },
   { icon: "verified_user", title: "Одговорноста е наша", body: "Од приемот до предавањето на курирот, ние одговараме за стоката.", visual: <Custody /> },
   { icon: "groups", title: "Нема кадар за водење", body: "Ние вработуваме, обучуваме и организираме смени. Вие не водите магацински тим.", visual: <Photo src="/assets/efc-pick-pack.jpg" alt="Тимот на EFC пакува нарачки" /> },
   { full: true, icon: "handshake", title: "Еден партнер за магацин и достава", body: "Спакуваните нарачки одат директно кај ELS. Нема чекање меѓу магацинот и курирот и нема дополнителен посредник.", visual: <Photo src="/assets/efc-van-dock.avif" alt="Пратки се товарат во возило за достава" /> },
   { icon: "visibility", title: "Увид во секој момент", body: "Залиха и статус на нарачките на веб, без да нè прашувате.", visual: <StockTable /> },
-  { icon: "storefront", title: "Вие се фокусирате на продажбата", body: "Времето што одеше на пакување и курири сега оди на продавање.", visual: <TimeBack /> },
+  { icon: "storefront", title: "Вие се фокусирате на продажбата", body: "Времето што одеше на пакување и курири сега оди на продавање.", visual: <HandOff /> },
 ];
 
 /** Render-style bordered grid: rows of one full-width cell or two equal cells, each claim paired with its proof. */

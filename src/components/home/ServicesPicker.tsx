@@ -154,70 +154,70 @@ export default function ServicesPicker() {
       title="Цел логистички центар зад вашата продавница"
       intro="Простор, рампа, тим, опрема и систем за евиденција. Од нив ги составуваме услугите што вам ви требаат, вклучително и оние што не се на листата."
     >
-        <div
-          data-reveal
-          className="efc-rise grid grid-cols-[minmax(0,1fr)] items-start lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)]"
-          style={{ ...delay(260), gap: "clamp(12px,1.4vw,20px)" }}
-        >
-          {/* requests */}
-          <div className="flex min-w-0 flex-col" role="group" aria-label="Изберете што ви треба" style={{ gap: 8 }}>
-            {REQUESTS.map((r, i) => {
-              const on = i === active;
-              return (
-                <Fragment key={r.name}>
-                  <button
-                    type="button"
-                    aria-pressed={on}
-                    aria-controls="solutions-panel"
-                    onClick={() => setActive(i)}
-                    className="efc-press flex cursor-pointer items-center justify-between text-left"
-                    style={{
-                      gap: 16,
-                      padding: "13px 18px",
-                      borderRadius: 6,
-                      border: `1px solid ${on ? "#101014" : "rgba(20,20,26,.12)"}`,
-                      background: on ? "#101014" : "#ffffff",
-                      color: on ? "#ffffff" : "#14141a",
-                      fontFamily: "inherit",
-                      transition: `background-color 260ms ${EASE}, color 260ms ${EASE}, border-color 260ms ${EASE}`,
-                    }}
-                  >
-                    <span className="flex min-w-0 flex-col" style={{ gap: 2 }}>
-                      <span style={{ fontSize: 16, fontWeight: 500, lineHeight: 1.3 }}>{r.name}</span>
-                      <span style={{ fontSize: 13.5, lineHeight: 1.35, color: on ? "rgba(255,255,255,.62)" : "rgba(20,20,26,.52)" }}>{r.quote}</span>
-                    </span>
-                    <span
-                      aria-hidden="true"
-                      style={{ flex: "none", width: 8, height: 8, borderRadius: "50%", background: on ? RED : "rgba(20,20,26,.16)", transition: `background-color 260ms ${EASE}` }}
-                    />
-                  </button>
-                  {on && (
-                    <div className="flex min-w-0 flex-col lg:hidden" style={{ gap: 24, padding: 20, borderRadius: 6, background: "#f5f3f2" }}>
-                      <Detail req={r} active={i} />
-                    </div>
-                  )}
-                </Fragment>
-              );
-            })}
-            <Link href="/services" className="efc-link inline-flex flex-wrap items-baseline self-start" style={{ gap: "4px 8px", marginTop: 10, fontSize: 15, color: "#14141a" }}>
-              <span style={{ color: "rgba(20,20,26,.6)" }}>Нешто друго?</span>
-              <span className="inline-flex items-center" style={{ gap: 6, fontWeight: 600 }}>
-                Погледнете ги сите услуги
-                <ArrowUpRight size={14} />
-              </span>
-            </Link>
-          </div>
-
-          {/* the centre */}
-          <div
-            id="solutions-panel"
-            aria-live="polite"
-            className="hidden min-w-0 flex-col lg:flex"
-            style={{ gap: "clamp(24px,3vw,40px)", padding: "clamp(20px,2.6vw,40px)", borderRadius: 6, background: "#f5f3f2", alignSelf: "stretch" }}
-          >
-            <Detail req={req} active={active} />
-          </div>
+      <div
+        data-reveal
+        className="efc-rise grid grid-cols-[minmax(0,1fr)] items-start lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)]"
+        style={{ ...delay(260), gap: "clamp(12px,1.4vw,20px)" }}
+      >
+        {/* requests */}
+        <div className="flex min-w-0 flex-col" role="group" aria-label="Изберете што ви треба" style={{ gap: 8 }}>
+          {REQUESTS.map((r, i) => {
+            const on = i === active;
+            return (
+              <Fragment key={r.name}>
+                <button
+                  type="button"
+                  aria-pressed={on}
+                  aria-controls="solutions-panel"
+                  onClick={() => setActive(i)}
+                  className="efc-press flex cursor-pointer items-center justify-between text-left"
+                  style={{
+                    gap: 16,
+                    padding: "13px 18px",
+                    borderRadius: 6,
+                    border: `1px solid ${on ? "#101014" : "rgba(20,20,26,.12)"}`,
+                    background: on ? "#101014" : "#ffffff",
+                    color: on ? "#ffffff" : "#14141a",
+                    fontFamily: "inherit",
+                    transition: `background-color 260ms ${EASE}, color 260ms ${EASE}, border-color 260ms ${EASE}`,
+                  }}
+                >
+                  <span className="flex min-w-0 flex-col" style={{ gap: 2 }}>
+                    <span style={{ fontSize: 16, fontWeight: 500, lineHeight: 1.3 }}>{r.name}</span>
+                    <span style={{ fontSize: 13.5, lineHeight: 1.35, color: on ? "rgba(255,255,255,.62)" : "rgba(20,20,26,.52)" }}>{r.quote}</span>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style={{ flex: "none", width: 8, height: 8, borderRadius: "50%", background: on ? RED : "rgba(20,20,26,.16)", transition: `background-color 260ms ${EASE}` }}
+                  />
+                </button>
+                {on && (
+                  <div className="flex min-w-0 flex-col lg:hidden" style={{ gap: 24, padding: 20, borderRadius: 6, background: "#f5f3f2" }}>
+                    <Detail req={r} active={i} />
+                  </div>
+                )}
+              </Fragment>
+            );
+          })}
+          <Link href="/services" className="efc-link inline-flex flex-wrap items-baseline self-start" style={{ gap: "4px 8px", marginTop: 10, fontSize: 15, color: "#14141a" }}>
+            <span style={{ color: "rgba(20,20,26,.6)" }}>Нешто друго?</span>
+            <span className="inline-flex items-center" style={{ gap: 6, fontWeight: 600 }}>
+              Погледнете ги сите услуги
+              <ArrowUpRight size={14} />
+            </span>
+          </Link>
         </div>
+
+        {/* the centre */}
+        <div
+          id="solutions-panel"
+          aria-live="polite"
+          className="hidden min-w-0 flex-col lg:flex"
+          style={{ gap: "clamp(24px,3vw,40px)", padding: "clamp(20px,2.6vw,40px)", borderRadius: 6, background: "#f5f3f2", alignSelf: "stretch" }}
+        >
+          <Detail req={req} active={active} />
+        </div>
+      </div>
     </Segment>
   );
 }
