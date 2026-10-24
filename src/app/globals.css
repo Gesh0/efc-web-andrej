@@ -6,12 +6,13 @@
 
 /* ----------------------------------------------------------------------------
    EFC design tokens
-   Onest carries the running copy, Oswald (uppercase) every display heading,
-   Geist only the "EFC" wordmark next to the logo mark.
+   Geist carries everything: running copy, headings (sentence case),
+   numerals (`font-numeric`) and the "EFC" wordmark.
 ---------------------------------------------------------------------------- */
 @theme {
-  --font-sans: var(--font-onest), "Onest", -apple-system, system-ui, sans-serif;
-  --font-display: var(--font-oswald), "Oswald", sans-serif;
+  --font-sans: var(--font-geist), "Geist", -apple-system, system-ui, sans-serif;
+  --font-display: var(--font-geist), "Geist", -apple-system, system-ui, sans-serif;
+  --font-numeric: var(--font-geist), "Geist", -apple-system, system-ui, sans-serif;
   --font-wordmark: var(--font-geist), "Geist", sans-serif;
 
   --color-brand: #dc2626;
@@ -50,13 +51,36 @@ a {
   text-decoration: none;
 }
 
-/* Display type: Oswald, uppercase, tight leading. Size is set per use. */
+/* Display type: Geist, sentence case, tight tracking. Size is set per use. */
 .efc-display {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 600;
-  letter-spacing: 0.004em;
-  text-transform: uppercase;
+  letter-spacing: -0.025em;
+}
+
+/* content swap inside a panel (e.g. the services picker) */
+@keyframes efc-swap {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [style*="efc-swap"] { animation: none !important; }
+}
+
+/* blinking "recording" dot on camera records */
+.efc-rec {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e31e1e;
+  animation: efc-blink 1.2s steps(2, jump-none) infinite;
+}
+@keyframes efc-blink {
+  50% { opacity: 0.25; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .efc-rec { animation: none; }
 }
 
 /* ----------------------------------------------------------------------------
@@ -312,6 +336,9 @@ a {
 }
 
 :root {
+  /* vertical rhythm: the gap between two segments AND between a segment's
+     header and its content. Segments pad half of it top and bottom (~64px desktop). */
+  --section-y: clamp(40px, 4.4vw, 64px);
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);

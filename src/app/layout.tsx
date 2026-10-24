@@ -1,30 +1,16 @@
 import type { Metadata } from "next";
-import { Onest, Oswald, Geist } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RevealObserver from "@/components/motion/RevealObserver";
 import { cn } from "@/lib/utils";
+import { MATERIAL_SYMBOLS_HREF } from "@/components/MaterialIcon";
 
-// Running copy
-const onest = Onest({
-  variable: "--font-onest",
-  subsets: ["latin", "cyrillic"],
-  display: "swap",
-});
-
-// Display headings (uppercase)
-const oswald = Oswald({
-  variable: "--font-oswald",
-  subsets: ["latin", "cyrillic"],
-  display: "swap",
-});
-
-// "EFC" wordmark beside the logo mark
+// One typeface for everything: copy, headings, numerals and the wordmark
 const geist = Geist({
   variable: "--font-geist",
-  subsets: ["latin"],
-  weight: ["700"],
+  subsets: ["latin", "cyrillic"],
   display: "swap",
 });
 
@@ -42,8 +28,12 @@ export default function RootLayout({
   return (
     <html
       lang="mk"
-      className={cn(onest.variable, oswald.variable, geist.variable, "font-sans")}
+      className={cn(geist.variable, "font-sans")}
     >
+      <head>
+        {/* Material Symbols icon font, trimmed to the glyphs we use */}
+        <link rel="stylesheet" href={MATERIAL_SYMBOLS_HREF} />
+      </head>
       <body>
         {/* without JS the reveal-on-view content must still be visible */}
         <noscript>

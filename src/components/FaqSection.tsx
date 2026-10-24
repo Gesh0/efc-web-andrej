@@ -7,7 +7,9 @@ import { ArrowUpRight } from "@/components/icons";
 
 const EASE = "cubic-bezier(.23,1,.32,1)";
 
-const FAQS = [
+type Faq = { q: string; a: string };
+
+const FAQS: Faq[] = [
   {
     q: "Кои региони се покриени со достава?",
     a: "Доставата се врши на територијата на целата држава преку директната интеграција со мрежата на ELS, опфаќајќи го секој град и населено место, со целосна следливост до крајната адреса.",
@@ -30,24 +32,37 @@ export default function FaqSection({
   id,
   maxWidth = 1180,
   single = false,
+  items = FAQS,
+  wide = false,
 }: {
   id: string;
   maxWidth?: number;
   /** exclusive accordion: opening one answer closes the others */
   single?: boolean;
+  /** questions to show; defaults to the general set */
+  items?: Faq[];
+  /** home-segment layout: 1920px container, 32–64px gutter, --section-y rhythm, no scroll rail */
+  wide?: boolean;
 }) {
   // first answer starts open
-  const [open, setOpen] = useState<boolean[]>(() => FAQS.map((_, i) => i === 0));
+  const [open, setOpen] = useState<boolean[]>(() => items.map((_, i) => i === 0));
   const toggle = (i: number) => setOpen((s) => s.map((v, k) => (k === i ? !v : single ? false : v)));
 
   return (
-    <section id={id} style={{ position: "relative", background: "#ffffff", padding: "clamp(64px,7vw,116px) clamp(20px,3.5vw,56px)" }}>
-      <div className="mx-auto" style={{ maxWidth }}>
-        <ScrollRail style={{ marginBottom: "clamp(20px,3vh,34px)" }} />
+    <section
+      id={id}
+      style={{
+        position: "relative",
+        background: "#ffffff",
+        padding: wide ? "calc(var(--section-y) / 2) clamp(32px,4vw,64px)" : "clamp(64px,7vw,116px) clamp(20px,3.5vw,56px)",
+      }}
+    >
+      <div className="mx-auto" style={{ maxWidth: wide ? 1920 : maxWidth }}>
+        {!wide && <ScrollRail style={{ marginBottom: "clamp(20px,3vh,34px)" }} />}
         <div data-reveal className="flex flex-wrap items-start justify-between" style={{ gap: "clamp(24px,4vw,64px)" }}>
           <h2
             className="efc-display"
-            style={{ maxWidth: "16ch", textWrap: "pretty", fontSize: "clamp(26px,3vw,44px)", lineHeight: 0.98, color: "#101014" }}
+            style={{ maxWidth: "16ch", textWrap: "pretty", fontSize: wide ? "clamp(28px,3.4vw,52px)" : "clamp(26px,3vw,44px)", lineHeight: wide ? 1.04 : 0.98, color: "#101014" }}
           >
             <Words text="Имате прашања? Тука сме да Ви помогнеме." />
           </h2>
@@ -67,8 +82,8 @@ export default function FaqSection({
           </div>
         </div>
 
-        <div data-reveal className="efc-rise" style={{ marginTop: "clamp(32px,4vw,56px)", borderTop: "1px solid rgba(20,20,26,.09)" }}>
-          {FAQS.map((f, i) => (
+        <div data-reveal className="efc-rise" style={{ marginTop: wide ? "var(--section-y)" : "clamp(32px,4vw,56px)", borderTop: "1px solid rgba(20,20,26,.09)" }}>
+          {items.map((f, i) => (
             <div key={f.q} style={{ borderBottom: "1px solid rgba(20,20,26,.09)" }}>
               <button
                 type="button"
