@@ -10,7 +10,7 @@ const LINE = "1px solid rgba(20,20,26,.1)";
 /* ------------------------------------------------------------ small visuals */
 
 function Panel({ children }: { children: ReactNode }) {
-  return <div style={{ borderRadius: 4, background: "#f5f4f3", padding: "var(--s32)", fontSize: 14 }}>{children}</div>;
+  return <div style={{ borderRadius: 6, background: "#f5f3f2", padding: "clamp(16px,1.6vw,22px)", fontSize: 14 }}>{children}</div>;
 }
 
 function NoUpfront() {
@@ -142,7 +142,7 @@ function HandOff() {
 
 function Photo({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="relative overflow-hidden" style={{ minHeight: 240, height: "100%", borderRadius: 4, background: "#101014" }}>
+    <div className="relative overflow-hidden" style={{ minHeight: 200, height: "100%", borderRadius: 6, background: "#101014" }}>
       <Image src={src} alt={alt} fill sizes="(max-width: 1100px) 100vw, 900px" className="object-cover" style={{ filter: "saturate(.8)" }} />
     </div>
   );
@@ -164,34 +164,43 @@ const BENEFITS: Benefit[] = [
   { icon: "storefront", title: "Вие се фокусирате на продажбата", body: "Времето што одеше на пакување и курири сега оди на продавање.", visual: <HandOff /> },
 ];
 
-/** Open grid on the 12 columns: rows of one full-width item or two halves, separated by whitespace only. */
+/** Render-style bordered grid: rows of one full-width cell or two equal cells, each claim paired with its proof. */
 export default function Benefits() {
   return (
     <Segment id="why" title="Што добивате кога логистиката е кај нас" intro="Сè што повеќе не плаќате, не водите и не ве загрижува.">
-      <div data-reveal className="grid grid-cols-1 lg:grid-cols-12" style={{ columnGap: "var(--el)", rowGap: "var(--s128)" }}>
+      <div data-reveal className="grid grid-cols-[minmax(0,1fr)] overflow-hidden lg:grid-cols-2" style={{ border: LINE, borderRadius: 6 }}>
         {BENEFITS.map((b, i) => {
+          // a half cell is the left of its pair when an even number of half cells precede it
+          const halvesBefore = BENEFITS.slice(0, i).filter((x) => !x.full).length;
+          const left = !b.full && halvesBefore % 2 === 0;
+          const lastRow = i >= BENEFITS.length - (BENEFITS[BENEFITS.length - 1].full ? 1 : 2);
           const head = (
-            <div className="flex flex-col" style={{ gap: "var(--s16)" }}>
-              <span className="grid place-items-center" style={{ width: 40, height: 40, borderRadius: 4, background: "#fbeaea", color: RED }}>
+            <div className="flex flex-col" style={{ gap: 12 }}>
+              <span className="grid place-items-center" style={{ width: 40, height: 40, borderRadius: 8, background: "#f5f3f2", color: RED }}>
                 <MaterialIcon name={b.icon} size={22} />
               </span>
-              <h3 className="efc-display" style={{ fontSize: "clamp(22px,2vw,30px)", lineHeight: 1.12, color: "#101014" }}>
+              <h3 className="efc-display" style={{ fontSize: "clamp(20px,1.8vw,28px)", lineHeight: 1.12, color: "#101014" }}>
                 {b.title}
               </h3>
-              <p style={{ margin: 0, maxWidth: "48ch", fontSize: "clamp(15px,1.1vw,16.5px)", lineHeight: 1.6, color: "rgba(20,20,26,.68)", textWrap: "pretty" }}>{b.body}</p>
+              <p style={{ margin: 0, maxWidth: "48ch", fontSize: "clamp(14.5px,1.05vw,16px)", lineHeight: 1.6, color: "rgba(20,20,26,.68)", textWrap: "pretty" }}>{b.body}</p>
             </div>
           );
-          return b.full ? (
-            <article key={b.title} className="efc-rise grid min-w-0 grid-cols-1 items-center lg:col-span-12 lg:grid-cols-12" style={{ ...delay(0), gap: "var(--el)" }}>
-              <div className="lg:col-span-5">{head}</div>
-              <div className="min-w-0 lg:col-span-6 lg:col-start-7" style={{ minHeight: 240 }}>
+          return (
+            <article
+              key={b.title}
+              className={[
+                "efc-rise flex min-w-0 flex-col border-[rgba(20,20,26,.1)]",
+                i < BENEFITS.length - 1 ? "border-b" : "",
+                lastRow ? "lg:border-b-0" : "",
+                left ? "lg:border-r" : "",
+                b.full ? "lg:col-span-2 lg:grid lg:grid-cols-2 lg:items-center" : "",
+              ].join(" ")}
+              style={{ ...delay((i % 2) * 90), gap: "clamp(20px,2.4vw,40px)", padding: "clamp(22px,2.6vw,40px)" }}
+            >
+              {head}
+              <div className={b.full ? "" : "mt-auto"} style={{ minHeight: b.full ? 220 : undefined }}>
                 {b.visual}
               </div>
-            </article>
-          ) : (
-            <article key={b.title} className="efc-rise flex min-w-0 flex-col lg:col-span-6" style={{ ...delay((i % 2) * 90), gap: "var(--el)" }}>
-              {head}
-              <div className="mt-auto">{b.visual}</div>
             </article>
           );
         })}

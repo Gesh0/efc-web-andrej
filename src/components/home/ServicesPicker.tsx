@@ -77,27 +77,29 @@ const REQUESTS: Request[] = [
   },
 ];
 
-/** Process strip + copy for the picked request. Shared by the desktop column and the mobile inline block. */
+/** Process strip + copy for the picked request. Shared by the desktop side panel and the mobile inline panel. */
 function Detail({ req, active }: { req: Request; active: number }) {
   return (
     <>
-      <div style={{ overflowX: "auto" }}>
-        <ol className="relative flex justify-between" style={{ minWidth: 640, margin: 0, padding: 0, listStyle: "none", gap: "var(--s8)" }}>
+      <div style={{ overflowX: "auto", margin: "0 -4px", padding: "0 4px" }}>
+        <ol className="relative flex justify-between" style={{ minWidth: 640, margin: 0, padding: 0, listStyle: "none", gap: 8 }}>
           {/* rail runs from the first icon's centre to the last one's */}
-          <span aria-hidden="true" className="absolute" style={{ left: 36, right: 36, top: 23, height: 1, background: "rgba(20,20,26,.12)" }} />
+          <span aria-hidden="true" className="absolute" style={{ left: 36, right: 36, top: 23, height: 2, background: "rgba(20,20,26,.1)" }} />
           {STEPS.map((s) => {
             const on = req.uses.includes(s.key);
             return (
-              <li key={s.key} className="relative flex flex-col items-center text-center" style={{ gap: "var(--s8)", width: 72 }}>
+              <li key={s.key} className="relative flex flex-col items-center text-center" style={{ gap: 10, width: 72 }}>
                 <span
                   className="grid place-items-center"
                   style={{
                     width: 48,
                     height: 48,
-                    borderRadius: 4,
-                    background: on ? RED : "#f2f2f4",
+                    borderRadius: 8,
+                    border: `1px solid ${on ? RED : "rgba(20,20,26,.14)"}`,
+                    background: on ? RED : "#ffffff",
                     color: on ? "#ffffff" : "rgba(20,20,26,.45)",
-                    transition: `background-color 320ms ${EASE}, color 320ms ${EASE}`,
+                    boxShadow: on ? "0 10px 24px -12px rgba(227,30,30,.8)" : "none",
+                    transition: `background-color 320ms ${EASE}, border-color 320ms ${EASE}, color 320ms ${EASE}, box-shadow 320ms ${EASE}`,
                   }}
                 >
                   <MaterialIcon name={s.icon} size={22} />
@@ -111,18 +113,26 @@ function Detail({ req, active }: { req: Request; active: number }) {
         </ol>
       </div>
 
-      <div key={active} className="flex flex-col" style={{ gap: "var(--el)", animation: `efc-swap 420ms ${EASE}` }}>
-        <div className="flex flex-col" style={{ gap: "var(--s16)" }}>
-          <h3 className="efc-display" style={{ fontSize: "clamp(24px,2.2vw,32px)", lineHeight: 1.1, color: "#101014" }}>
+      <div key={active} className="flex flex-1 flex-col" style={{ gap: "clamp(20px,2.4vw,32px)", animation: `efc-swap 420ms ${EASE}` }}>
+        <div className="flex flex-col" style={{ gap: 12 }}>
+          <h3 className="efc-display" style={{ fontSize: "clamp(22px,2vw,30px)", lineHeight: 1.1, color: "#101014" }}>
             {req.title}
           </h3>
-          <p style={{ margin: 0, maxWidth: "58ch", fontSize: "clamp(15px,1.1vw,16.5px)", lineHeight: 1.6, color: "rgba(20,20,26,.7)", textWrap: "pretty" }}>
+          <p style={{ margin: 0, maxWidth: "62ch", fontSize: "clamp(15px,1.1vw,16.5px)", lineHeight: 1.6, color: "rgba(20,20,26,.7)", textWrap: "pretty" }}>
             {req.body}
           </p>
         </div>
-        <ul className="grid" style={{ margin: 0, padding: 0, listStyle: "none", gap: "var(--s16) var(--el)", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,180px),1fr))" }}>
+        {/* points sit on the panel floor so the panel never shows an empty block */}
+        <ul
+          className="grid"
+          style={{ marginTop: "auto", padding: 0, listStyle: "none", gap: 8, gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,180px),1fr))" }}
+        >
           {req.points.map((p) => (
-            <li key={p} className="flex items-baseline" style={{ gap: "var(--s8)", fontSize: 15.5, lineHeight: 1.4, color: "#14141a" }}>
+            <li
+              key={p}
+              className="flex items-start"
+              style={{ gap: 10, padding: "14px 16px", borderRadius: 6, background: "#ffffff", fontSize: 15, lineHeight: 1.4, color: "#14141a" }}
+            >
               <span aria-hidden="true" style={{ color: RED, fontWeight: 700 }}>✓</span>
               <span>{p}</span>
             </li>
@@ -133,7 +143,7 @@ function Detail({ req, active }: { req: Request; active: number }) {
   );
 }
 
-/** Client requests on the left as plain text rows; the right column lights the parts of the centre that handle the picked one. */
+/** Client requests on the left; the right panel lights the parts of the centre that handle the picked one. */
 export default function ServicesPicker() {
   const [active, setActive] = useState(0);
   const req = REQUESTS[active];
@@ -144,9 +154,13 @@ export default function ServicesPicker() {
       title="Цел логистички центар зад вашата продавница"
       intro="Простор, рампа, тим, опрема и систем за евиденција. Од нив ги составуваме услугите што вам ви требаат, вклучително и оние што не се на листата."
     >
-      <div data-reveal className="efc-rise grid grid-cols-1 items-start lg:grid-cols-12" style={{ ...delay(260), gap: "var(--el)" }}>
+      <div
+        data-reveal
+        className="efc-rise grid grid-cols-[minmax(0,1fr)] items-start lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)]"
+        style={{ ...delay(260), gap: "clamp(12px,1.4vw,20px)" }}
+      >
         {/* requests */}
-        <div className="flex min-w-0 flex-col lg:col-span-4" role="group" aria-label="Изберете што ви треба" style={{ gap: "var(--s16)" }}>
+        <div className="flex min-w-0 flex-col" role="group" aria-label="Изберете што ви треба" style={{ gap: 8 }}>
           {REQUESTS.map((r, i) => {
             const on = i === active;
             return (
@@ -156,23 +170,38 @@ export default function ServicesPicker() {
                   aria-pressed={on}
                   aria-controls="solutions-panel"
                   onClick={() => setActive(i)}
-                  className="flex cursor-pointer flex-col items-start text-left"
-                  style={{ gap: 2, padding: "var(--s8) 0 var(--s8) var(--s16)", border: 0, borderLeft: `2px solid ${on ? RED : "transparent"}`, background: "transparent", fontFamily: "inherit", transition: `border-color 260ms ${EASE}` }}
+                  className="efc-press flex cursor-pointer items-center justify-between text-left"
+                  style={{
+                    gap: 16,
+                    padding: "13px 18px",
+                    borderRadius: 6,
+                    border: `1px solid ${on ? "#101014" : "rgba(20,20,26,.12)"}`,
+                    background: on ? "#101014" : "#ffffff",
+                    color: on ? "#ffffff" : "#14141a",
+                    fontFamily: "inherit",
+                    transition: `background-color 260ms ${EASE}, color 260ms ${EASE}, border-color 260ms ${EASE}`,
+                  }}
                 >
-                  <span style={{ fontSize: 18, fontWeight: on ? 600 : 500, lineHeight: 1.3, color: on ? RED : "#14141a", transition: `color 260ms ${EASE}` }}>{r.name}</span>
-                  <span style={{ fontSize: 14, lineHeight: 1.35, color: "rgba(20,20,26,.52)" }}>{r.quote}</span>
+                  <span className="flex min-w-0 flex-col" style={{ gap: 2 }}>
+                    <span style={{ fontSize: 16, fontWeight: 500, lineHeight: 1.3 }}>{r.name}</span>
+                    <span style={{ fontSize: 13.5, lineHeight: 1.35, color: on ? "rgba(255,255,255,.62)" : "rgba(20,20,26,.52)" }}>{r.quote}</span>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    style={{ flex: "none", width: 8, height: 8, borderRadius: "50%", background: on ? RED : "rgba(20,20,26,.16)", transition: `background-color 260ms ${EASE}` }}
+                  />
                 </button>
                 {on && (
-                  <div className="flex min-w-0 flex-col lg:hidden" style={{ gap: "var(--el)", padding: "var(--s16) 0 var(--s32)" }}>
+                  <div className="flex min-w-0 flex-col lg:hidden" style={{ gap: 24, padding: 20, borderRadius: 6, background: "#f5f3f2" }}>
                     <Detail req={r} active={i} />
                   </div>
                 )}
               </Fragment>
             );
           })}
-          <Link href="/services" className="efc-link inline-flex flex-wrap items-baseline self-start" style={{ gap: "var(--s8)", paddingTop: "var(--s16)", fontSize: 15, color: "#14141a" }}>
+          <Link href="/services" className="efc-link inline-flex flex-wrap items-baseline self-start" style={{ gap: "4px 8px", marginTop: 10, fontSize: 15, color: "#14141a" }}>
             <span style={{ color: "rgba(20,20,26,.6)" }}>Нешто друго?</span>
-            <span className="inline-flex items-center" style={{ gap: "var(--s8)", fontWeight: 600 }}>
+            <span className="inline-flex items-center" style={{ gap: 6, fontWeight: 600 }}>
               Погледнете ги сите услуги
               <ArrowUpRight size={14} />
             </span>
@@ -180,7 +209,12 @@ export default function ServicesPicker() {
         </div>
 
         {/* the centre */}
-        <div id="solutions-panel" aria-live="polite" className="hidden min-w-0 flex-col lg:col-span-7 lg:col-start-6 lg:flex" style={{ gap: "var(--s64)" }}>
+        <div
+          id="solutions-panel"
+          aria-live="polite"
+          className="hidden min-w-0 flex-col lg:flex"
+          style={{ gap: "clamp(24px,3vw,40px)", padding: "clamp(20px,2.6vw,40px)", borderRadius: 6, background: "#f5f3f2", alignSelf: "stretch" }}
+        >
           <Detail req={req} active={active} />
         </div>
       </div>

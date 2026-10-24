@@ -41,7 +41,7 @@ export default function FaqSection({
   single?: boolean;
   /** questions to show; defaults to the general set */
   items?: Faq[];
-  /** home layout: spacing scale, no scroll rail, no row lines */
+  /** home-segment layout: 1920px container, 32–64px gutter, --section-y rhythm, no scroll rail */
   wide?: boolean;
 }) {
   // first answer starts open
@@ -54,7 +54,7 @@ export default function FaqSection({
       style={{
         position: "relative",
         background: "#ffffff",
-        padding: wide ? "calc(var(--section-y) / 2) var(--gutter)" : "clamp(64px,7vw,116px) clamp(20px,3.5vw,56px)",
+        padding: wide ? "calc(var(--section-y) / 2) clamp(32px,4vw,64px)" : "clamp(64px,7vw,116px) clamp(20px,3.5vw,56px)",
       }}
     >
       <div className="mx-auto" style={{ maxWidth: wide ? 1920 : maxWidth }}>
@@ -62,7 +62,7 @@ export default function FaqSection({
         <div data-reveal className="flex flex-wrap items-start justify-between" style={{ gap: "clamp(24px,4vw,64px)" }}>
           <h2
             className="efc-display"
-            style={{ maxWidth: "16ch", textWrap: "pretty", fontSize: wide ? "clamp(30px,3.6vw,56px)" : "clamp(26px,3vw,44px)", lineHeight: wide ? 1.04 : 0.98, color: "#101014" }}
+            style={{ maxWidth: "16ch", textWrap: "pretty", fontSize: wide ? "clamp(28px,3.4vw,52px)" : "clamp(26px,3vw,44px)", lineHeight: wide ? 1.04 : 0.98, color: "#101014" }}
           >
             <Words text="Имате прашања? Тука сме да Ви помогнеме." />
           </h2>
@@ -82,18 +82,18 @@ export default function FaqSection({
           </div>
         </div>
 
-        <div data-reveal className="efc-rise" style={wide ? { marginTop: "var(--head)", maxWidth: "66%", minWidth: "min(100%, 640px)" } : { marginTop: "clamp(32px,4vw,56px)", borderTop: "1px solid rgba(20,20,26,.09)" }}>
+        <div data-reveal className="efc-rise" style={{ marginTop: wide ? "var(--section-y)" : "clamp(32px,4vw,56px)", borderTop: "1px solid rgba(20,20,26,.09)" }}>
           {items.map((f, i) => (
-            <div key={f.q} style={wide ? undefined : { borderBottom: "1px solid rgba(20,20,26,.09)" }}>
+            <div key={f.q} style={{ borderBottom: "1px solid rgba(20,20,26,.09)" }}>
               <button
                 type="button"
                 aria-expanded={open[i]}
                 aria-controls={`${id}-a${i}`}
                 onClick={() => toggle(i)}
                 className="efc-press flex w-full cursor-pointer items-start justify-between text-left"
-                style={{ gap: 24, padding: wide ? "var(--s16) 0" : "clamp(16px,1.8vw,22px) 0", border: 0, background: "transparent", fontFamily: "inherit" }}
+                style={{ gap: 24, padding: "clamp(16px,1.8vw,22px) 0", border: 0, background: "transparent", fontFamily: "inherit" }}
               >
-                <span style={{ fontSize: wide ? "clamp(17px,1.4vw,20px)" : "clamp(15.5px,1.3vw,18px)", fontWeight: 500, lineHeight: 1.35, color: "#101014", textWrap: "pretty" }}>
+                <span style={{ fontSize: "clamp(15.5px,1.3vw,18px)", fontWeight: 500, lineHeight: 1.35, color: "#101014", textWrap: "pretty" }}>
                   {f.q}
                 </span>
                 <span aria-hidden="true" className="relative block flex-none" style={{ width: 16, height: 16, marginTop: 6 }}>
@@ -128,7 +128,7 @@ export default function FaqSection({
                   <p
                     style={{
                       margin: 0,
-                      paddingBottom: wide ? "var(--s16)" : "clamp(16px,1.8vw,22px)",
+                      paddingBottom: "clamp(16px,1.8vw,22px)",
                       maxWidth: "72ch",
                       fontSize: "clamp(14.5px,1.1vw,16px)",
                       fontWeight: 300,

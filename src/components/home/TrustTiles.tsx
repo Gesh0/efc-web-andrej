@@ -43,13 +43,13 @@ const TILES: { title: ReactNode; body: string; img: string; alt: string; positio
 /** Four photo tiles, each carrying one trust message top-left. */
 export default function TrustTiles() {
   return (
-    <section id="trust" style={{ background: "#ffffff", padding: "calc(var(--section-y) / 2) var(--gutter)" }}>
+    <section id="trust" style={{ background: "#ffffff", padding: "clamp(20px,3vw,40px) clamp(32px,4vw,64px) calc(var(--section-y) / 2)" }}>
       <div className="mx-auto" style={{ maxWidth: 1920 }}>
         <h2 className="sr-only">Зошто да ни ја доверите стоката</h2>
         <div
           data-reveal
           className="grid"
-          style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,520px),1fr))", gap: "var(--el)" }}
+          style={{ gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,520px),1fr))", gap: "clamp(12px,1.2vw,20px)" }}
         >
           {TILES.map((t, i) => (
             <article
@@ -70,7 +70,7 @@ export default function TrustTiles() {
                 className="pointer-events-none absolute inset-0"
                 style={{ background: "linear-gradient(155deg, rgba(10,10,14,.55) 0%, rgba(10,10,14,.2) 38%, rgba(10,10,14,0) 62%)" }}
               />
-              <div className="relative flex flex-col" style={{ gap: "var(--s8)", padding: "var(--s32)", maxWidth: "36ch", textShadow: "0 1px 12px rgba(10,10,14,.35)" }}>
+              <div className="relative flex flex-col" style={{ gap: 12, padding: "clamp(20px,2.4vw,32px)", maxWidth: "36ch", textShadow: "0 1px 12px rgba(10,10,14,.35)" }}>
                 <h3 className="efc-display" style={{ margin: 0, fontSize: "clamp(24px,2.5vw,36px)", lineHeight: 1.02, color: "#ffffff" }}>
                   {t.title}
                 </h3>

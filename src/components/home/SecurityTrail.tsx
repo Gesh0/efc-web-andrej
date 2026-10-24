@@ -13,7 +13,7 @@ const GREEN = "#1f9d55";
 
 function Card({ icon, title, meta, children }: { icon: MaterialName; title: string; meta?: string; children: ReactNode }) {
   return (
-    <div style={{ borderRadius: 4, background: "#ffffff", color: "#14141a", boxShadow: "0 24px 50px -28px rgba(10,10,14,.6)", overflow: "hidden", fontSize: 14 }}>
+    <div style={{ borderRadius: 6, background: "#ffffff", color: "#14141a", boxShadow: "0 24px 50px -28px rgba(10,10,14,.6)", overflow: "hidden", fontSize: 14 }}>
       <div className="flex items-center justify-between" style={{ gap: 12, padding: "12px 16px", borderBottom: "1px solid rgba(20,20,26,.08)" }}>
         <span className="inline-flex items-center" style={{ gap: 8, fontWeight: 600 }}>
           <span style={{ color: RED, display: "inline-flex" }}>
@@ -139,8 +139,8 @@ export default function SecurityTrail() {
       title="Што се случува со вашата стока"
       intro="Следете една нарачка низ магацинот. Секој чекор остава запис што можете да го проверите."
     >
-      <div className="grid grid-cols-1 items-start lg:grid-cols-12" style={{ gap: "var(--el)" }}>
-        <ol className="flex min-w-0 flex-col lg:col-span-5" style={{ margin: 0, padding: 0, listStyle: "none", gap: "var(--s64)" }}>
+      <div className="grid grid-cols-[minmax(0,1fr)] items-start lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]" style={{ gap: "clamp(20px,3vw,56px)" }}>
+        <ol className="flex min-w-0 flex-col" style={{ margin: 0, padding: 0, listStyle: "none", borderTop: "1px solid rgba(20,20,26,.1)" }}>
           {STEPS.map((s, i) => {
             const on = i === active;
             return (
@@ -150,12 +150,12 @@ export default function SecurityTrail() {
                   refs.current[i] = el;
                 }}
                 data-i={i}
-                className="flex flex-col"
-                style={{ gap: "var(--el)" }}
+                className="flex flex-col lg:min-h-[30vh] lg:justify-center"
+                style={{ gap: 18, padding: "clamp(22px,2.4vw,36px) 0", borderBottom: "1px solid rgba(20,20,26,.1)" }}
               >
                 <div
                   className="grid transition-opacity duration-500 lg:opacity-[var(--o)]"
-                  style={{ "--o": on ? 1 : 0.35, gridTemplateColumns: "40px minmax(0,1fr)", columnGap: "var(--s16)", rowGap: "var(--s8)" } as React.CSSProperties}
+                  style={{ "--o": on ? 1 : 0.35, gridTemplateColumns: "40px minmax(0,1fr)", columnGap: 16, rowGap: 6 } as React.CSSProperties}
                 >
                   <span
                     className="font-numeric grid place-items-center"
@@ -163,7 +163,7 @@ export default function SecurityTrail() {
                       gridRow: "span 2",
                       width: 40,
                       height: 40,
-                      borderRadius: 4,
+                      borderRadius: 8,
                       fontSize: 14,
                       fontWeight: 600,
                       background: on ? RED : "#f5f3f2",
@@ -178,7 +178,7 @@ export default function SecurityTrail() {
                 </div>
 
                 {/* mobile: this step's photo + record, inline */}
-                <div className="relative overflow-hidden lg:hidden" style={{ minHeight: 300, borderRadius: 4, background: "#101014" }}>
+                <div className="relative overflow-hidden lg:hidden" style={{ minHeight: 300, borderRadius: 6, background: "#101014" }}>
                   <Image src={s.img} alt={s.alt} fill sizes="100vw" className="object-cover" style={{ filter: "saturate(.75) brightness(.8)" }} />
                   <div className="absolute" style={{ left: 12, right: 12, bottom: 12 }}>{s.record}</div>
                 </div>
@@ -188,7 +188,7 @@ export default function SecurityTrail() {
         </ol>
 
         {/* desktop: one pinned panel that follows the active step */}
-        <div className="sticky hidden overflow-hidden lg:col-span-6 lg:col-start-7 lg:block" style={{ top: 120, height: "min(72vh, 680px)", borderRadius: 4, background: "#101014" }}>
+        <div className="sticky hidden overflow-hidden lg:block" style={{ top: 120, height: "min(72vh, 680px)", borderRadius: 6, background: "#101014" }}>
           {STEPS.map((s, i) => (
             <Image
               key={s.img}
