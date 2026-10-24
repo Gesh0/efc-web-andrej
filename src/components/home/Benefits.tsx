@@ -4,7 +4,7 @@ import Segment from "@/components/home/Segment";
 import MaterialIcon, { type MaterialName } from "@/components/MaterialIcon";
 import { delay } from "@/components/motion/Words";
 import { Card, Pill, Row } from "@/components/home/records";
-import { LINE, PAD, RED, rule } from "@/components/home/frame";
+import { DotField, PAD, RED, rule } from "@/components/home/frame";
 
 /* ------------------------------------------------------------------ visuals
    Attio-style: a light stage that runs to the cell edges, holding one crisp UI record. */
@@ -98,13 +98,10 @@ function HandOff() {
   );
 }
 
-/** Light stage behind a record: a faint dot grid, the record centred in it. */
+/** Positions the record inside the cell; the cell itself carries the dot field. */
 function Stage({ children }: { children: ReactNode }) {
   return (
-    <div
-      className="grid h-full place-items-center"
-      style={{ padding: PAD, background: "#f7f7f8", backgroundImage: "radial-gradient(rgba(20,20,26,.09) 1px, transparent 1px)", backgroundSize: "16px 16px" }}
-    >
+    <div className="relative grid h-full place-items-center" style={{ padding: `0 ${PAD} ${PAD}` }}>
       <div style={{ width: "min(100%, 420px)" }}>{children}</div>
     </div>
   );
@@ -112,7 +109,10 @@ function Stage({ children }: { children: ReactNode }) {
 
 function Photo({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="relative h-full overflow-hidden" style={{ minHeight: 280, background: "#101014" }}>
+    <div
+      className="relative h-full overflow-hidden"
+      style={{ minHeight: 300, maskImage: "linear-gradient(to bottom, transparent 0%, #000 38%)", WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 38%)" }}
+    >
       <Image src={src} alt={alt} fill sizes="(max-width: 1024px) 100vw, 720px" className="object-cover" style={{ filter: "saturate(.85)" }} />
     </div>
   );
@@ -135,8 +135,8 @@ const BENEFITS: Benefit[] = [
 ];
 
 /**
- * Bordered grid rail to rail. Each cell: the claim on top, its proof below on a stage that
- * runs to the cell edges (full-width rows put the stage on the right half instead).
+ * Bordered grid rail to rail. Each cell is one container: a dot field fades across it from
+ * bottom-left, the claim sits on top and its proof below (full-width rows: proof on the right).
  */
 export default function Benefits() {
   return (
@@ -152,7 +152,7 @@ export default function Benefits() {
             <article
               key={b.title}
               className={[
-                "efc-rise grid min-w-0 border-[rgba(20,20,26,.08)]",
+                "efc-rise relative grid min-w-0 overflow-hidden border-[rgba(20,20,26,.08)]",
                 i < BENEFITS.length - 1 ? "border-b" : "",
                 lastRow ? "lg:border-b-0" : "",
                 left ? "lg:border-r" : "",
@@ -160,7 +160,9 @@ export default function Benefits() {
               ].join(" ")}
               style={delay((i % 2) * 90)}
             >
-              <div className="flex flex-col" style={{ gap: 14, padding: PAD }}>
+              {/* the cell is the container: one dot field behind claim and proof, dense bottom-left */}
+              <DotField tint="rgba(20,20,26,.025)" />
+              <div className="relative flex flex-col" style={{ gap: 14, padding: PAD }}>
                 <span style={{ color: RED, display: "inline-flex" }}>
                   <MaterialIcon name={b.icon} size={26} />
                 </span>
@@ -169,7 +171,7 @@ export default function Benefits() {
                 </h3>
                 <p style={{ margin: 0, maxWidth: "48ch", fontSize: 15.5, lineHeight: 1.6, color: "rgba(20,20,26,.66)", textWrap: "pretty" }}>{b.body}</p>
               </div>
-              <div className={b.full ? "max-lg:border-t lg:border-l" : "border-t"} style={{ borderColor: LINE, minHeight: b.full ? 320 : 300 }}>
+              <div className="relative" style={{ minHeight: b.full ? 320 : 300, paddingTop: b.full ? PAD : 0 }}>
                 {visual}
               </div>
             </article>

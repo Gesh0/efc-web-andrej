@@ -5,7 +5,7 @@ import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
-import { Frame, PAD, RED } from "@/components/home/frame";
+import { DotField, Frame, RED } from "@/components/home/frame";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -78,7 +78,18 @@ function useRotator(boxRef: React.RefObject<HTMLSpanElement | null>) {
 export default function HomeHero() {
   const root = useRef<HTMLElement>(null);
   const rotRef = useRef<HTMLSpanElement>(null);
+  const field = useRef<HTMLDivElement>(null);
   useRotator(rotRef);
+
+  // cursor spotlight on the dot field (fine pointers only; CSS vars keep it off the React render path)
+  const spot = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = field.current;
+    if (!el || e.pointerType !== "mouse" || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+    el.style.setProperty("--my", `${e.clientY - r.top}px`);
+    el.style.setProperty("--spot", "1");
+  };
 
   useGSAP(
     () => {
@@ -136,10 +147,26 @@ export default function HomeHero() {
   return (
     <section id="top" ref={root} className="relative" style={{ paddingTop: 64 }}>
       <Frame>
-        {/* heading bottom-left, container top-right; they meet on the centre line */}
-        <div className="grid grid-cols-1 items-stretch lg:grid-cols-2" style={{ minHeight: "clamp(520px,78vh,780px)", padding: PAD, columnGap: 32, rowGap: 32 }}>
+        {/* heading bottom-left, container top-right, each close to its corner, over a dot field */}
+        <div
+          ref={field}
+          onPointerMove={spot}
+          onPointerLeave={() => field.current?.style.setProperty("--spot", "0")}
+          className="relative grid grid-cols-1 items-stretch overflow-hidden lg:grid-cols-2"
+          style={{ minHeight: "clamp(600px,90vh,960px)", padding: "clamp(16px,2vw,28px)", columnGap: 32, rowGap: 32 }}
+        >
+          {/* dense behind the container (top-right), dissolving towards the heading */}
+          <DotField size={18} color="rgba(20,20,26,.28)" mask="radial-gradient(120% 110% at 100% 0%, #000 0%, rgba(0,0,0,.45) 40%, transparent 78%)" />
+          <span aria-hidden="true" className="pointer-events-none absolute" style={{ right: "-10%", top: "-20%", width: "70%", height: "80%", background: "radial-gradient(closest-side, rgba(227,30,30,.14), rgba(227,30,30,0))" }} />
+          {/* red dots that follow the cursor */}
+          <DotField
+            size={18}
+            color="rgba(227,30,30,.75)"
+            mask="radial-gradient(circle 200px at var(--mx, 70%) var(--my, 30%), #000 0%, transparent 100%)"
+            style={{ opacity: "var(--spot, 0)", transition: "opacity 400ms cubic-bezier(.23,1,.32,1)" }}
+          />
           <h1
-            className="efc-display order-2 self-end lg:order-1"
+            className="efc-display relative order-2 self-end lg:order-1"
             aria-label={`${TITLE.join(" ")} ${ROTATING[0]}`}
             style={{ fontSize: "clamp(40px,5.4vw,80px)", lineHeight: 1.02, color: "#14141a", textWrap: "balance" }}
           >
@@ -172,7 +199,7 @@ export default function HomeHero() {
                 preload
                 sizes="(max-width: 1024px) 90vw, 640px"
                 className="efc-pre"
-                style={{ width: "min(100%, 680px)", height: "auto", transformOrigin: "50% 55%", filter: CONTAINER_SHADOW, pointerEvents: "auto" }}
+                style={{ width: "min(100%, 760px)", height: "auto", transformOrigin: "50% 55%", filter: CONTAINER_SHADOW, pointerEvents: "auto" }}
               />
             </div>
           </div>

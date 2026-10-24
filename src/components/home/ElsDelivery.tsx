@@ -2,7 +2,6 @@ import Image from "next/image";
 import MaterialIcon, { type MaterialName } from "@/components/MaterialIcon";
 import { delay } from "@/components/motion/Words";
 import { Frame, LINE_DARK, PAD, RED, rule } from "@/components/home/frame";
-import { SectionHead } from "@/components/home/Segment";
 
 const FEATURES: { icon: MaterialName; text: string }[] = [
   { icon: "local_shipping", text: "Достава следниот ден низ целата држава" },
@@ -24,24 +23,31 @@ export default function ElsDelivery() {
     <section id="delivery" className="relative" style={{ background: "#121214", color: "#ffffff" }}>
       <Frame>
         <div style={{ borderLeft: rule(LINE_DARK), borderRight: rule(LINE_DARK) }}>
-          <SectionHead
-            dark
-            title="Доставата ја врши ELS, нашиот партнер."
-            lead="Најголем удел на македонскиот пазар за достава. Спакуваното од нашиот магацин оди директно во нивната мрежа."
-          />
+          {/* the ELS mark sits inside the statement instead of on a row of its own */}
+          <div data-reveal style={{ maxWidth: 1000, padding: `calc(${PAD} * 2) ${PAD} calc(${PAD} * 1.5)` }}>
+            <h2 className="efc-display efc-rise" style={{ fontSize: "clamp(28px,3vw,44px)", lineHeight: 1.2, textWrap: "pretty" }}>
+              Доставата ја врши{" "}
+              <Image
+                src="/assets/elslogo-white.png"
+                alt="ELS"
+                width={420}
+                height={140}
+                style={{ display: "inline-block", height: "0.95em", width: "auto", verticalAlign: "-0.12em", marginLeft: ".06em" }}
+              />
+              , нашиот партнер.{" "}
+              <span style={{ color: "#6b6b72" }}>Најголем удел на македонскиот пазар за достава. Спакуваното од нашиот магацин оди директно во нивната мрежа.</span>
+            </h2>
+          </div>
 
           <div data-reveal className="grid grid-cols-1 lg:grid-cols-2" style={{ borderTop: rule(LINE_DARK) }}>
-            {/* left cell: logo row, then a 2×2 grid of features that reaches the cell edges */}
+            {/* left cell: a 2×2 grid of features that reaches the cell edges */}
             <div className="efc-rise flex flex-col">
-              <div style={{ padding: PAD }}>
-                <Image src="/assets/elslogo-white.png" alt="ELS — Eco Logistic Service" width={420} height={140} style={{ height: 32, width: "auto" }} />
-              </div>
-              <ul className="mt-auto grid grid-cols-1 sm:grid-cols-2" style={{ margin: 0, padding: 0, listStyle: "none", borderTop: rule(LINE_DARK) }}>
+              <ul className="grid flex-1 grid-cols-1 sm:grid-cols-2" style={{ margin: 0, padding: 0, listStyle: "none" }}>
                 {FEATURES.map((f, i) => (
                   <li
                     key={f.text}
                     className={`flex flex-col ${i % 2 ? "sm:border-l" : ""} ${i > 0 ? "max-sm:border-t" : ""} ${i > 1 ? "sm:border-t" : ""}`}
-                    style={{ gap: 16, padding: `28px ${PAD}`, borderColor: LINE_DARK, fontSize: 15.5, lineHeight: 1.4 }}
+                    style={{ gap: 16, justifyContent: "space-between", minHeight: 180, padding: PAD, borderColor: LINE_DARK, fontSize: 16, lineHeight: 1.4 }}
                   >
                     <span style={{ color: RED, display: "inline-flex" }}>
                       <MaterialIcon name={f.icon} size={24} />

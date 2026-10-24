@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { delay } from "@/components/motion/Words";
 import { ArrowUpRight } from "@/components/icons";
 import { EASE, Frame, PAD, RED, rule } from "@/components/home/frame";
@@ -19,6 +19,20 @@ const FAQ = [
 /** Header row (statement left, contact right) over a numbered, full-width accordion. */
 export default function HomeFaq() {
   const [open, setOpen] = useState(0);
+  // natural height of every answer, so the space below the list can absorb whichever is open
+  const answers = useRef<(HTMLDivElement | null)[]>([]);
+  const [heights, setHeights] = useState<number[]>([]);
+
+  useEffect(() => {
+    const measure = () => setHeights(answers.current.map((el) => el?.scrollHeight ?? 0));
+    measure();
+    const ro = new ResizeObserver(measure);
+    answers.current.forEach((el) => el && ro.observe(el));
+    return () => ro.disconnect();
+  }, []);
+
+  const tallest = Math.max(0, ...heights);
+  const reserve = tallest - (open >= 0 ? (heights[open] ?? 0) : 0);
 
   return (
     <section id="faq" className="relative">
@@ -62,7 +76,12 @@ export default function HomeFaq() {
                   </span>
                 </button>
                 <div id={`faq-a${i}`} role="region" className="grid" style={{ gridTemplateRows: on ? "1fr" : "0fr", transition: `grid-template-rows 380ms ${EASE}` }}>
-                  <div className="min-h-0 overflow-hidden">
+                  <div
+                    ref={(el) => {
+                      answers.current[i] = el;
+                    }}
+                    className="min-h-0 overflow-hidden"
+                  >
                     <p style={{ margin: 0, padding: `0 ${PAD} 24px calc(${PAD} + 64px)`, maxWidth: "calc(72ch + 160px)", fontSize: 15.5, lineHeight: 1.6, color: "rgba(20,20,26,.66)" }}>{f.a}</p>
                   </div>
                 </div>
@@ -70,6 +89,8 @@ export default function HomeFaq() {
             );
           })}
         </div>
+        {/* blank space that shrinks as an answer opens, so the footer never moves */}
+        <div aria-hidden="true" style={{ height: `calc(${reserve}px + ${PAD} * 2)`, transition: `height 380ms ${EASE}` }} />
       </Frame>
     </section>
   );

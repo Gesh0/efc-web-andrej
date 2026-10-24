@@ -33,3 +33,36 @@ export function Rails() {
     </div>
   );
 }
+
+/**
+ * Dot grid that fades along a gradient. `mask` decides where it is dense (opaque) and where it
+ * dissolves; the default is dense bottom-left, gone by the top-right.
+ */
+export function DotField({
+  mask = "linear-gradient(to top right, #000 0%, rgba(0,0,0,.55) 35%, transparent 75%)",
+  color = "rgba(20,20,26,.16)",
+  size = 16,
+  tint,
+  style,
+}: {
+  mask?: string;
+  color?: string;
+  size?: number;
+  /** optional wash under the dots, same mask */
+  tint?: string;
+  style?: CSSProperties;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0"
+      style={{
+        backgroundImage: `radial-gradient(${color} 1px, transparent 1.2px)${tint ? `, linear-gradient(${tint}, ${tint})` : ""}`,
+        backgroundSize: `${size}px ${size}px${tint ? ", 100% 100%" : ""}`,
+        maskImage: mask,
+        WebkitMaskImage: mask,
+        ...style,
+      }}
+    />
+  );
+}
