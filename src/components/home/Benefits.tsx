@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import Image from "next/image";
 import Segment from "@/components/home/Segment";
 import MaterialIcon, { type MaterialName } from "@/components/MaterialIcon";
 import { delay } from "@/components/motion/Words";
@@ -107,31 +106,50 @@ function Stage({ children }: { children: ReactNode }) {
   );
 }
 
-function Photo({ src, alt }: { src: string; alt: string }) {
-  return (
-    <div
-      className="relative h-full overflow-hidden"
-      style={{ minHeight: 300, maskImage: "linear-gradient(to bottom, transparent 0%, #000 38%)", WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 38%)" }}
-    >
-      <Image src={src} alt={alt} fill sizes="(max-width: 1024px) 100vw, 720px" className="object-cover" style={{ filter: "saturate(.85)" }} />
-    </div>
-  );
-}
-
 /* ----------------------------------------------------------------- benefits */
 
-type Benefit = { icon: MaterialName; title: string; body: string; visual: ReactNode; photo?: boolean; full?: boolean };
+type Benefit = { icon: MaterialName; title: string; body: string; visual: ReactNode; full?: boolean };
 
-// row pattern: full · half half · half half · full · half half
+// six high-level points, row pattern: full · half half · half half · full
 const BENEFITS: Benefit[] = [
-  { full: true, icon: "savings", title: "Нула трошоци однапред", body: "Без закуп на магацин, полици, опрема или вработување. Почнувате со стоката што веќе ја имате.", visual: <NoUpfront /> },
-  { icon: "payments", title: "Плаќате колку што користите", body: "Нема фиксен месечен трошок. Во тивок месец плаќате помалку, во сезона повеќе.", visual: <PayPerUse /> },
-  { icon: "trending_up", title: "Расте со вас", body: "Без минимум и без горна граница на нарачки. Истиот договор додека растете, а сезоната ја покриваме ние.", visual: <Scale /> },
-  { icon: "verified_user", title: "Одговорноста е наша", body: "Од приемот до предавањето на курирот, ние одговараме за стоката.", visual: <Custody /> },
-  { icon: "groups", title: "Нема кадар за водење", body: "Ние вработуваме, обучуваме и организираме смени. Вие не водите магацински тим.", photo: true, visual: <Photo src="/assets/efc-pick-pack.jpg" alt="Тимот на EFC пакува нарачки" /> },
-  { full: true, icon: "handshake", title: "Еден партнер за магацин и достава", body: "Спакуваните нарачки одат директно кај ELS. Нема чекање меѓу магацинот и курирот и нема дополнителен посредник.", photo: true, visual: <Photo src="/assets/efc-van-dock.avif" alt="Пратки се товарат во возило за достава" /> },
-  { icon: "visibility", title: "Увид во секој момент", body: "Залиха и статус на нарачките на веб, без да нè прашувате.", visual: <StockTable /> },
-  { icon: "storefront", title: "Вие се фокусирате на продажбата", body: "Времето што одеше на пакување и курири сега оди на продавање.", visual: <HandOff /> },
+  {
+    full: true,
+    icon: "savings",
+    title: "Нула трошоци однапред",
+    body: "Не изнајмувате магацин, не купувате полици и опрема и не вработувате магацински тим. Почнувате со стоката што веќе ја имате, а ние го обезбедуваме сето останато уште од првиот ден.",
+    visual: <NoUpfront />,
+  },
+  {
+    icon: "payments",
+    title: "Плаќате колку што користите",
+    body: "Нема фиксен месечен трошок. Плаќате за просторот што го зафаќа вашата стока и за нарачките што ги обработуваме, па во тивок месец и сметката е помала.",
+    visual: <PayPerUse />,
+  },
+  {
+    icon: "trending_up",
+    title: "Расте со вас",
+    body: "Нема минимум и нема горна граница на нарачки. Кога продажбата расте или доаѓа сезона, капацитетот го покриваме ние, со истиот договор и без нов магацин.",
+    visual: <Scale />,
+  },
+  {
+    icon: "verified_user",
+    title: "Одговорноста е наша",
+    body: "Од моментот кога ја примаме стоката па сè до предавањето на курирот, одговорноста е наша. Секој чекор е евидентиран, а пакувањето е снимено со камера.",
+    visual: <Custody />,
+  },
+  {
+    icon: "visibility",
+    title: "Увид во секој момент",
+    body: "Залихата, статусот на секоја нарачка и вратените пратки ги гледате на нашата платформа. Не мора да се јавувате или да прашувате каде е нешто.",
+    visual: <StockTable />,
+  },
+  {
+    full: true,
+    icon: "storefront",
+    title: "Вие се фокусирате на продажбата",
+    body: "Пакувањето, фискализацијата, залихата и куририте преминуваат кај нас. Времето што досега одеше на логистика сега го трошите на продавање и на вашите купувачи.",
+    visual: <HandOff />,
+  },
 ];
 
 /**
@@ -147,7 +165,7 @@ export default function Benefits() {
           const halvesBefore = BENEFITS.slice(0, i).filter((x) => !x.full).length;
           const left = !b.full && halvesBefore % 2 === 0;
           const lastRow = i >= BENEFITS.length - (BENEFITS[BENEFITS.length - 1].full ? 1 : 2);
-          const visual = b.photo ? b.visual : <Stage>{b.visual}</Stage>;
+          const visual = <Stage>{b.visual}</Stage>;
           return (
             <article
               key={b.title}
@@ -169,7 +187,7 @@ export default function Benefits() {
                 <h3 className="efc-display" style={{ fontSize: "clamp(20px,1.7vw,26px)", lineHeight: 1.15, color: "#101014" }}>
                   {b.title}
                 </h3>
-                <p style={{ margin: 0, maxWidth: "48ch", fontSize: 15.5, lineHeight: 1.6, color: "rgba(20,20,26,.66)", textWrap: "pretty" }}>{b.body}</p>
+                <p style={{ margin: 0, maxWidth: "52ch", fontSize: 16, lineHeight: 1.6, color: "rgba(20,20,26,.66)", textWrap: "pretty" }}>{b.body}</p>
               </div>
               <div className="relative" style={{ minHeight: b.full ? 320 : 300, paddingTop: b.full ? PAD : 0 }}>
                 {visual}

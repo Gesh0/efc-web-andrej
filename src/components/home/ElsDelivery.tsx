@@ -1,13 +1,13 @@
 import Image from "next/image";
 import MaterialIcon, { type MaterialName } from "@/components/MaterialIcon";
 import { delay } from "@/components/motion/Words";
-import { Frame, LINE_DARK, PAD, RED, rule } from "@/components/home/frame";
+import { DotField, Frame, LINE_DARK, PAD, RED, rule } from "@/components/home/frame";
 
-const FEATURES: { icon: MaterialName; text: string }[] = [
-  { icon: "local_shipping", text: "Достава следниот ден низ целата држава" },
-  { icon: "password", text: "Потврда на испораката со OTP код" },
-  { icon: "payments", text: "Наплата при достава во готово или со картичка" },
-  { icon: "location_on", text: "Следење на секоја пратка" },
+const FEATURES: { icon: MaterialName; title: string; text: string }[] = [
+  { icon: "local_shipping", title: "Следниот ден", text: "Достава низ целата држава, до секој град и населено место." },
+  { icon: "password", title: "OTP потврда", text: "Купувачот ја потврдува испораката со код, па нема спорови." },
+  { icon: "payments", title: "Наплата при достава", text: "Во готово или со картичка. Парите стигнуваат до вас." },
+  { icon: "location_on", title: "Следење на пратката", text: "Секоја пратка може да се следи до крајната адреса." },
 ];
 
 const TRACK = [
@@ -45,22 +45,26 @@ export default function ElsDelivery() {
               <ul className="grid flex-1 grid-cols-1 sm:grid-cols-2" style={{ margin: 0, padding: 0, listStyle: "none" }}>
                 {FEATURES.map((f, i) => (
                   <li
-                    key={f.text}
+                    key={f.title}
                     className={`flex flex-col ${i % 2 ? "sm:border-l" : ""} ${i > 0 ? "max-sm:border-t" : ""} ${i > 1 ? "sm:border-t" : ""}`}
-                    style={{ gap: 16, justifyContent: "space-between", minHeight: 180, padding: PAD, borderColor: LINE_DARK, fontSize: 16, lineHeight: 1.4 }}
+                    style={{ gap: 10, padding: PAD, borderColor: LINE_DARK }}
                   >
-                    <span style={{ color: RED, display: "inline-flex" }}>
-                      <MaterialIcon name={f.icon} size={24} />
+                    <span className="inline-flex items-center" style={{ gap: 10, fontSize: 17, fontWeight: 600 }}>
+                      <span style={{ color: RED, display: "inline-flex" }}>
+                        <MaterialIcon name={f.icon} size={22} />
+                      </span>
+                      {f.title}
                     </span>
-                    {f.text}
+                    <span style={{ fontSize: 15, lineHeight: 1.55, color: "rgba(255,255,255,.62)" }}>{f.text}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* right cell: the tracking record */}
-            <div className="efc-rise grid place-items-center max-lg:border-t lg:border-l" style={{ ...delay(160), padding: `calc(${PAD} * 1.5) ${PAD}`, borderColor: LINE_DARK }}>
-              <div style={{ width: "min(100%, 440px)", background: "#ffffff", color: "#14141a" }}>
+            <div className="efc-rise relative grid place-items-center overflow-hidden max-lg:border-t lg:border-l" style={{ ...delay(160), padding: PAD, borderColor: LINE_DARK }}>
+              <DotField color="rgba(255,255,255,.14)" />
+              <div className="relative" style={{ width: "min(100%, 440px)", background: "#ffffff", color: "#14141a" }}>
                 <div className="flex items-center justify-between" style={{ gap: 12, padding: "14px 16px", borderBottom: rule() }}>
                   <span style={{ fontWeight: 600, fontSize: 15 }}>
                     Пратка <span className="font-numeric">4001-20418</span>

@@ -1,11 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import MaterialIcon from "@/components/MaterialIcon";
 import { usePathname } from "next/navigation";
 import Logo from "@/components/Logo";
-import useMagnetic from "@/components/motion/useMagnetic";
 import { FRAME_MAX, GUTTER } from "@/components/home/frame";
 
 const LOGIN_URL = "https://efc.wms.pro/login";
@@ -27,9 +26,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const [overHero, setOverHero] = useState(pathname === "/services");
-  const contactRef = useRef<HTMLAnchorElement>(null);
   const [hidden, setHidden] = useState(false);
-  useMagnetic(contactRef);
 
   // home: hide while scrolling down, return on scroll up; sticky page parts read --nav-h
   useEffect(() => {
@@ -188,7 +185,7 @@ export default function Navbar() {
           target="_blank"
           rel="noopener"
           aria-label="Логирај се"
-          className="efc-press inline-flex items-center whitespace-nowrap px-5 hover:border-brand! hover:text-brand! max-sm:px-[9px]"
+          className="inline-flex items-center whitespace-nowrap px-5 hover:border-brand! hover:text-brand! max-sm:px-[9px]"
           style={{
             height: 40,
             borderRadius: isHome ? 0 : 9999,
@@ -196,8 +193,6 @@ export default function Navbar() {
             color: dark ? "#ffffff" : "#14141a",
             fontSize: 13.5,
             fontWeight: 600,
-            transition:
-              "transform 140ms cubic-bezier(.23,1,.32,1), border-color 240ms cubic-bezier(.23,1,.32,1), color 240ms cubic-bezier(.23,1,.32,1)",
           }}
         >
           {/* phones: icon only, so the nav stays on one row next to the CTA */}
@@ -207,7 +202,6 @@ export default function Navbar() {
           </span>
         </a>
         <Link
-          ref={contactRef}
           href="/contact"
           aria-current={pathname === "/contact" ? "page" : undefined}
           className="inline-flex items-center text-white hover:bg-[#ef2f2f]!"
